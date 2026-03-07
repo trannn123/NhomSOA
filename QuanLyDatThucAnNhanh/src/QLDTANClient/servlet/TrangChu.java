@@ -52,7 +52,7 @@ public class TrangChu extends HttpServlet {
 		HttpSession session = request.getSession();
 
 		if (session.getAttribute("user") == null) {
-			response.sendRedirect(request.getContextPath() + "/DangNhap");
+			response.sendRedirect("DangNhap");
 			return;
 		}
 		
@@ -63,45 +63,85 @@ public class TrangChu extends HttpServlet {
 		out.println("<!DOCTYPE html>");
 		out.println("<html>");
 		out.println("<head>");
-
 		out.println("<meta charset='UTF-8'>");
-
-		out.println(
-				"<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel='stylesheet'>");
-
 		out.println("<title>Trang chủ</title>");
+
+		out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel='stylesheet'>");
+		out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css' rel='stylesheet'>");
 
 		out.println("</head>");
 
-		out.println("<body style='background:#f2f2f2;'>");
+		out.println("<body style='background:linear-gradient(135deg,#ff512f,#ffb347);min-height:100vh;'>");
 
-		out.println("<div class='container mt-5'>");
+		/* NAVBAR */
 
-		out.println("<div class='card p-4 text-center'>");
+		out.println("<nav class='navbar navbar-dark bg-dark'>");
+		out.println("<div class='container'>");
 
-		out.println("<h3 class='text-danger'>Trang hệ thống</h3>");
+		out.println("<span class='navbar-brand'>QL Đặt Thức Ăn</span>");
 
-		out.println("<p>Xin chào <b>" + nd.getHoTen() + "</b></p>");
+		out.println("<div class='text-white'>");
+		out.println(nd.getHoTen());
+		out.println("<a href='DangXuat' class='btn btn-outline-light btn-sm ms-3'>Đăng xuất</a>");
+		out.println("</div>");
 
-		out.println("<br>");
+		out.println("</div>");
+		out.println("</nav>");
 
-		// Khách + nhân viên đều xem món
-		out.println("<a class='btn btn-primary m-2' href='DanhSachMon'>Xem món</a>");
+		/* CONTENT */
 
-		if ("nhanvien".equals(vaiTro)) {
+		out.println("<div class='container d-flex justify-content-center align-items-center' style='min-height:80vh;'>");
 
-			out.println("<a class='btn btn-success m-2' href='QuanLyNguoiDung'>Quản lý người dùng</a>");
+		out.println("<div class='bg-white rounded shadow p-5 text-center' style='max-width:700px;width:100%;'>");
 
-			out.println("<a class='btn btn-warning m-2' href='QuanLyHoaDon'>Quản lý hóa đơn</a>");
+		out.println("<h4 class='mb-4'>Trang hệ thống</h4>");
 
-			out.println("<a class='btn btn-info m-2' href='QuanLyMon'>Quản lý món</a>");
+		out.println("<div class='row g-4'>");
 
+
+		if("khachhang".equals(vaiTro)){
+			
+			out.println("<div class='col-12'>");
+			out.println("<a href='DanhSachMon' class='text-decoration-none'>");
+			out.println("<div class='border rounded p-4 hover'>");
+			out.println("<i class='bi bi-basket fs-2'></i>");
+			out.println("<p class='mt-2'>Đặt món</p>");
+			out.println("</div>");
+			out.println("</a>");
+			out.println("</div>");
 		}
 
-		out.println("<br><br>");
+		if("nhanvien".equals(vaiTro)){
 
-		out.println("<a class='btn btn-danger' href='DangXuat'>Đăng xuất</a>");
+			out.println("<div class='col-md-4'>");
+			out.println("<a href='QuanLyNguoiDung' class='text-decoration-none text-dark'>");
+			out.println("<div class='border rounded p-4'>");
+			out.println("<i class='bi bi-people fs-2'></i>");
+			out.println("<p class='mt-2'>Người dùng</p>");
+			out.println("</div>");
+			out.println("</a>");
+			out.println("</div>");
 
+			out.println("<div class='col-md-4'>");
+			out.println("<a href='QuanLyHoaDon' class='text-decoration-none text-dark'>");
+			out.println("<div class='border rounded p-4'>");
+			out.println("<i class='bi bi-receipt fs-2'></i>");
+			out.println("<p class='mt-2'>Hóa đơn</p>");
+			out.println("</div>");
+			out.println("</a>");
+			out.println("</div>");
+
+			out.println("<div class='col-md-4'>");
+			out.println("<a href='QuanLyMon' class='text-decoration-none text-dark'>");
+			out.println("<div class='border rounded p-4'>");
+			out.println("<i class='bi bi-egg-fried fs-2'></i>");
+			out.println("<p class='mt-2'>Món ăn</p>");
+			out.println("</div>");
+			out.println("</a>");
+			out.println("</div>");
+		}
+
+		out.println("</div>");
 		out.println("</div>");
 		out.println("</div>");
 

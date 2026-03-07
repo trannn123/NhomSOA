@@ -39,37 +39,84 @@ public class ThemMon extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("jsp/ThemMon.jsp")
-		   .forward(request, response);
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		String ten = request.getParameter("ten");
+		String gia = request.getParameter("gia");
+		String soluong = request.getParameter("soluong");
+		String mota = request.getParameter("mota");
+		if (ten != null && gia != null && soluong != null && mota != null) {
+
+			try {
+
+				target
+				.path("rest")
+				.path("monan")
+				.path("ThemMon")
+				.path(ten)
+				.path(gia)
+				.path(soluong)
+				.path(mota)
+				.request()
+				.post(null);
+
+				response.sendRedirect("QuanLyMon");
+				return;
+
+			} catch (Exception e) {
+
+				out.println("<h3 class='text-danger'>Thêm món thất bại</h3>");
+
+			}
+		}
+		out.println("<html><head>");
+		out.println("<meta charset='UTF-8'>");
+		out.println("<title>Thêm món</title>");
+		out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel='stylesheet'>");
+		out.println("</head>");
+
+		out.println("<body class='container mt-4'>");
+
+		out.println("<h2 class='text-success'>Thêm món ăn</h2>");
+
+		out.println("<form>");
+
+		out.println("<div class='mb-3'>");
+		out.println("<label class='form-label'>Tên món</label>");
+		out.println("<input type='text' class='form-control' name='ten' "
+		        + "placeholder='Nhập tên món ăn (VD: Gà rán KFC)' required>");
+		out.println("</div>");
+
+		out.println("<div class='mb-3'>");
+		out.println("<label class='form-label'>Giá</label>");
+		out.println("<input type='number' step='0.01' min='0' class='form-control' name='gia' "
+		        + "placeholder='Nhập giá món (VD: 45000.50)' required>");
+		out.println("</div>");
+
+		out.println("<div class='mb-3'>");
+		out.println("<label class='form-label'>Số lượng</label>");
+		out.println("<input type='number' min='1' class='form-control' name='soluong' "
+		        + "placeholder='Nhập số lượng (VD: 10)' required>");
+		out.println("</div>");
+
+		out.println("<div class='mb-3'>");
+		out.println("<label class='form-label'>Mô tả</label>");
+		out.println("<textarea class='form-control' name='mota' rows='3' "
+		        + "placeholder='Nhập mô tả món ăn (VD: Gà rán giòn, cay nhẹ)'></textarea>");
+		out.println("</div>");
+
+		out.println("<button class='btn btn-success'>Thêm</button>");
+		out.println("<a href='QuanLyMon' class='btn btn-secondary'>Quay lại</a>");
+
+		out.println("</form>");
+
+		out.println("</body></html>");
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
-		String ten = request.getParameter("ten");
-		String gia = request.getParameter("gia");
-		String soluong = request.getParameter("soluong");
-		String mota = request.getParameter("mota");
-		try {
-			WebTarget resource = target
-					.path("rest")
-					.path("monan")
-					.path("ThemMon")
-					.path(ten)
-					.path(gia)
-					.path(soluong)
-					.path(mota);
-			String result = resource
-					.request()
-					.post(null, String.class);
-			request.setAttribute("msg", result);
-		} catch (Exception e) {
-			request.setAttribute("msg", "Lỗi kết nối REST API");
-			e.printStackTrace();
-		}
-		request.getRequestDispatcher("jsp/ThemMon.jsp")
-			   .forward(request, response);
+		doGet(request, response);
 	}
 }
