@@ -34,13 +34,14 @@ public class MonAnWS {
     }
 
     @POST
-    @Path("/SuaMon/{id}/{ten}/{gia}/{soluong}/{mota}")
+    @Path("/SuaMon/{id}/{ten}/{gia}/{soluong}/{mota}/{trangthai}")
     public Response suaMon(
             @PathParam("id") int id,
             @PathParam("ten") String ten,
             @PathParam("gia") double gia,
             @PathParam("soluong") int soluong,
-            @PathParam("mota") String mota) {
+            @PathParam("mota") String mota,
+            @PathParam("trangthai") String trangthai) {
 
         MonAn mon = new MonAn();
         mon.setId(id);
@@ -48,6 +49,7 @@ public class MonAnWS {
         mon.setGia(gia);
         mon.setSoLuong(soluong);
         mon.setMoTa(mota);
+        mon.setTrangThai(trangthai);
         boolean kq = service.suaMon(mon);
         return kq
                 ? Response.ok("Sửa thành công").build()

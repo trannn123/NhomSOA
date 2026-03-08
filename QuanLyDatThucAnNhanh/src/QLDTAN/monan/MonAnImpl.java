@@ -86,7 +86,7 @@ public class MonAnImpl implements IMonAn {
 
             Connection conn = DBConnection.getConnection();
 
-            String sql = "UPDATE monan SET ten_mon=?,gia=?,so_luong=?,mo_ta=? WHERE id=?";
+            String sql = "UPDATE monan SET ten_mon=?,gia=?,so_luong=?,mo_ta=?,trang_thai=? WHERE id=?";
 
             PreparedStatement ps = conn.prepareStatement(sql);
 
@@ -94,7 +94,8 @@ public class MonAnImpl implements IMonAn {
             ps.setDouble(2, m.getGia());
             ps.setInt(3, m.getSoLuong());
             ps.setString(4, m.getMoTa());
-            ps.setInt(5, m.getId());
+            ps.setString(5, m.getTrangThai());
+            ps.setInt(6, m.getId());
 
             ps.executeUpdate();
 
