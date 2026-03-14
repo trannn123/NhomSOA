@@ -1,6 +1,0 @@
-package service;
-import model.User;
-
-public interface IChungThucService {
-	User login(String username, String password);
-}

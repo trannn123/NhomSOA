@@ -1,0 +1,127 @@
+package Client;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
+
+import org.glassfish.jersey.client.ClientConfig;
+
+import QLDTAN.ChiTietHoaDon;
+import QLDTAN.GioHang;
+import QLDTAN.HoaDon;
+import QLDTAN.NguoiDung;
+
+/**
+ * Servlet implementation class DatMon
+ */
+@WebServlet("/DatMon")
+public class DatMon extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+	private static final URI uri =
+            UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh/").build();
+
+    ClientConfig config = new ClientConfig();
+    Client client = ClientBuilder.newClient(config);
+    WebTarget target = client.target(uri);
+    public DatMon() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+
+		NguoiDung nd = (NguoiDung) session.getAttribute("user");
+
+		if(nd == null){
+		    response.sendRedirect("DangNhap");
+		    return;
+		}
+        List<GioHang> cart = (List<GioHang>) session.getAttribute("cart");
+      
+
+        if (cart == null || cart.isEmpty()) {
+            response.sendRedirect("DanhSachMonAn");
+            return;
+        }
+
+        double tongTien = 0;
+        int tongSoLuong = 0;
+
+        for (GioHang g : cart) {
+            tongTien += g.getThanhTien();
+            tongSoLuong += g.getSoLuong();
+        }
+
+        // ======================
+        // TẠO HÓA ĐƠN
+        // ======================
+
+        HoaDon hd = new HoaDon();
+
+        hd.setNguoiDungId(nd.getId());
+        hd.setTongTien(tongTien);
+        hd.setTongSoLuong(tongSoLuong);
+        hd.setTrangThai("dang_xu_ly");
+
+        int hoaDonId = target
+                .path("rest")
+                .path("quanly")
+                .path("TaoHoaDon")
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(hd, MediaType.APPLICATION_JSON), Integer.class);
+        // ======================
+        // THÊM CHI TIẾT HÓA ĐƠN
+        // ======================
+
+        for (GioHang g : cart) {
+
+            ChiTietHoaDon ct = new ChiTietHoaDon();
+
+            ct.setHoaDonId(hoaDonId);
+            ct.setMonAnId(g.getMon().getId());
+            ct.setSoLuong(g.getSoLuong());
+            ct.setGia(g.getMon().getGia());
+
+            target
+                .path("rest")
+                .path("quanly")
+                .path("ThemChiTietHoaDon")
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(ct, MediaType.APPLICATION_JSON), String.class);
+        }
+
+        session.removeAttribute("cart");
+
+        response.sendRedirect("DanhSachMonAn");
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}

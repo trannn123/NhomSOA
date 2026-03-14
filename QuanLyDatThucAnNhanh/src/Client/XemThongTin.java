@@ -1,0 +1,207 @@
+package Client;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URI;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+
+import javax.ws.rs.client.*;
+import javax.ws.rs.core.*;
+
+import org.glassfish.jersey.client.ClientConfig;
+
+import QLDTAN.NguoiDung;
+
+@WebServlet("/XemThongTin")
+public class XemThongTin extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    private static final URI uri =
+            UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh/").build();
+
+    ClientConfig config = new ClientConfig();
+    Client client = ClientBuilder.newClient(config);
+    WebTarget target = client.target(uri);
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+    	request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("DangNhap");
+            return;
+        }
+
+        NguoiDung user = (NguoiDung) session.getAttribute("user");
+        String username = user.getTenDangNhap();
+
+        NguoiDung nd = null;
+
+        try {
+
+            nd = target.path("rest")
+                    .path("quanly")
+                    .path("ThongTinNguoiDung")
+                    .path(username)
+                    .request(MediaType.APPLICATION_JSON)
+                    .get(NguoiDung.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (nd == null) {
+            out.println("<h3>Không lấy được thông tin người dùng</h3>");
+            return;
+        }
+
+        int id = nd.getId();
+        String vaiTro = nd.getVaiTro();
+        String trangThai = nd.getTrangThai();
+        String hoTen = nd.getHoTen();
+        String email = nd.getEmail();
+        String soDienThoai = nd.getSoDienThoai();
+        String diaChi = nd.getDiaChi();
+
+        /* HIỂN THỊ TIẾNG VIỆT */
+
+        String vaiTroHienThi = "";
+
+        if ("nhanvien".equals(vaiTro))
+            vaiTroHienThi = "Nhân viên";
+        else if ("khachhang".equals(vaiTro))
+            vaiTroHienThi = "Khách hàng";
+
+        String trangThaiHienThi = "";
+
+        if ("hoatdong".equals(trangThai))
+            trangThaiHienThi = "Hoạt động";
+        else
+            trangThaiHienThi = "Khóa";
+
+        /* HTML */
+
+        out.println("<!DOCTYPE html>");
+        out.println("<html>");
+        out.println("<head>");
+
+        out.println("<meta charset='UTF-8'>");
+        out.println("<title>Thông tin tài khoản</title>");
+
+        out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel='stylesheet'>");
+        out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css' rel='stylesheet'>");
+
+        out.println("<style>");
+
+        out.println("body{");
+        out.println("background:#f8f9fa;");
+        out.println("font-family:system-ui;");
+        out.println("}");
+
+        out.println(".navbar-brand{color:#ff6b2c !important;}");
+
+        out.println(".btn-outline-danger{");
+        out.println("border-color:#ff6b2c;");
+        out.println("color:#ff6b2c;");
+        out.println("}");
+
+        out.println(".btn-outline-danger:hover{");
+        out.println("background:#ff6b2c;");
+        out.println("color:white;");
+        out.println("}");
+
+        out.println(".info-card{");
+        out.println("background:white;");
+        out.println("border-radius:12px;");
+        out.println("padding:30px;");
+        out.println("box-shadow:0 8px 20px rgba(0,0,0,0.08);");
+        out.println("}");
+
+        out.println(".info-row{");
+        out.println("padding:10px 0;");
+        out.println("border-bottom:1px solid #eee;");
+        out.println("}");
+
+        out.println(".label{");
+        out.println("font-weight:600;");
+        out.println("color:#444;");
+        out.println("}");
+
+        out.println("</style>");
+
+        out.println("</head>");
+        out.println("<body>");
+
+        /* NAVBAR */
+
+        out.println("<nav class='navbar bg-white border-bottom'>");
+        out.println("<div class='container'>");
+
+        out.println("<span class='navbar-brand fw-bold'>Quản Lý Đặt Thức Ăn</span>");
+
+        out.println("<div class='d-flex align-items-center'>");
+
+        out.println("<a href='TrangChu' class='btn btn-danger btn-sm me-2'>");
+        out.println("<i class='bi bi-house'></i>");
+        out.println("</a>");
+
+        out.println("<span class='me-3 text-danger'>Xin chào <b>" + hoTen + "</b></span>");
+
+        out.println("<a href='DangXuat' class='btn btn-outline-danger btn-sm'>Đăng xuất</a>");
+
+        out.println("</div>");
+        out.println("</div>");
+        out.println("</nav>");
+
+        /* CONTENT */
+
+        out.println("<div class='container d-flex justify-content-center align-items-center' style='min-height:80vh;'>");
+
+        out.println("<div class='info-card' style='max-width:520px;width:100%;'>");
+
+        out.println("<h4 class='text-center mb-4 fw-bold'>Thông tin tài khoản</h4>");
+
+        out.println("<div class='info-row'><span class='label'>ID:</span> " + id + "</div>");
+        out.println("<div class='info-row'><span class='label'>Tên đăng nhập:</span> " + username + "</div>");
+        out.println("<div class='info-row'><span class='label'>Họ tên:</span> " + hoTen + "</div>");
+        out.println("<div class='info-row'><span class='label'>Email:</span> " + email + "</div>");
+        out.println("<div class='info-row'><span class='label'>Số điện thoại:</span> " + soDienThoai + "</div>");
+        out.println("<div class='info-row'><span class='label'>Địa chỉ:</span> " + diaChi + "</div>");
+        out.println("<div class='info-row'><span class='label'>Vai trò:</span> " + vaiTroHienThi + "</div>");
+        out.println("<div class='info-row'><span class='label'>Trạng thái:</span> " + trangThaiHienThi + "</div>");
+
+        out.println("<div class='text-center mt-4'>");
+
+        out.println("<a href='CapNhatThongTin' class='btn btn-warning me-2'>");
+        out.println("<i class='bi bi-pencil'></i> Chỉnh sửa");
+        out.println("</a>");
+
+        out.println("<a href='DoiMatKhau' class='btn btn-warning me-2'>");
+        out.println("<i class='bi bi-pencil'></i> Đổi mật khẩu");
+        out.println("</a>");
+        
+        out.println("<a href='TrangChu' class='btn btn-danger'>Quay lại</a>");
+
+        out.println("</div>");
+
+        out.println("</div>");
+        out.println("</div>");
+
+        out.println("</body>");
+        out.println("</html>");
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        doGet(request, response);
+    }
+}
