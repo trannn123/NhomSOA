@@ -107,15 +107,15 @@ public class TimMon extends HttpServlet {
 		out.println("<nav class='navbar bg-white border-bottom'>");
 		out.println("<div class='container'>");
 
-		out.println("<span class='navbar-brand fw-bold text-danger'>Quản Lý Đặt Thức Ăn</span>");
+		out.println("<span class='navbar-brand fw-bold'>Quản Lý Đặt Thức Ăn</span>");
 
 		out.println("<div class='d-flex align-items-center'>");
 
-		out.println("<a href='TrangChu' class='btn btn-danger btn-sm me-2'>");
+		out.println("<a href='TrangChu' class='btn btn-outline-danger btn-sm me-2'>");
 		out.println("<i class='bi bi-house'></i>");
 		out.println("</a>");
 
-		out.println("<span class='me-3 text-danger'>Xin chào <b>" + nd.getHoTen() + "</b></span>");
+		out.println("<span class='me-3'>Xin chào <b>" + nd.getHoTen() + "</b></span>");
 
 		out.println("<a href='DangXuat' class='btn btn-outline-danger btn-sm'>Đăng xuất</a>");
 
@@ -123,6 +123,7 @@ public class TimMon extends HttpServlet {
 
 		out.println("</div>");
 		out.println("</nav>");
+
 
 		out.println("<div class='container mt-5'>");
 

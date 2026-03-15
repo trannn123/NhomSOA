@@ -23,38 +23,49 @@ import org.glassfish.jersey.client.ClientConfig;
 import QLDTAN.GioHang;
 import QLDTAN.MonAn;
 
-/**
- * Servlet implementation class ThemGioHang
- */
 @WebServlet("/ThemGioHang")
 public class ThemGioHang extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-	private static final URI uri =
+    private static final long serialVersionUID = 1L;
+
+    private static final URI uri =
             UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh/").build();
 
     ClientConfig config = new ClientConfig();
     Client client = ClientBuilder.newClient(config);
     WebTarget target = client.target(uri);
+
     public ThemGioHang() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String idStr = request.getParameter("id");
+    @SuppressWarnings("unchecked")
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-		if(idStr == null){
-		    response.sendRedirect("DanhSachMonAn");
-		    return;
-		}
-		int id = Integer.parseInt(idStr);
+        String idStr = request.getParameter("id");
+        String from = request.getParameter("from");
+
+        if (idStr == null || idStr.trim().isEmpty()) {
+            if ("cart".equals(from)) {
+                response.sendRedirect("XemGioHang");
+            } else {
+                response.sendRedirect("DanhSachMonAn");
+            }
+            return;
+        }
+
+        int id;
+        try {
+            id = Integer.parseInt(idStr);
+        } catch (NumberFormatException e) {
+            if ("cart".equals(from)) {
+                response.sendRedirect("XemGioHang");
+            } else {
+                response.sendRedirect("DanhSachMonAn");
+            }
+            return;
+        }
+
         MonAn mon = target
                 .path("rest")
                 .path("quanly")
@@ -63,8 +74,16 @@ public class ThemGioHang extends HttpServlet {
                 .request(MediaType.APPLICATION_JSON)
                 .get(new GenericType<MonAn>() {});
 
-        HttpSession session = request.getSession();
+        if (mon == null) {
+            if ("cart".equals(from)) {
+                response.sendRedirect("XemGioHang");
+            } else {
+                response.sendRedirect("DanhSachMonAn");
+            }
+            return;
+        }
 
+        HttpSession session = request.getSession();
         List<GioHang> cart = (List<GioHang>) session.getAttribute("cart");
 
         if (cart == null) {
@@ -74,7 +93,7 @@ public class ThemGioHang extends HttpServlet {
         boolean tonTai = false;
 
         for (GioHang g : cart) {
-            if (g.getMon().getId() == id) {
+            if (g.getMon() != null && g.getMon().getId() == id) {
                 g.setSoLuong(g.getSoLuong() + 1);
                 tonTai = true;
                 break;
@@ -88,15 +107,15 @@ public class ThemGioHang extends HttpServlet {
 
         session.setAttribute("cart", cart);
 
-        response.sendRedirect("DanhSachMonAn");
-	}
+        if ("cart".equals(from)) {
+            response.sendRedirect("XemGioHang");
+        } else {
+            response.sendRedirect("DanhSachMonAn");
+        }
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response);
+    }
 }

@@ -67,4 +67,17 @@ public class HoaDonWS {
                 ? Response.ok(ds).build()
                 : Response.status(Response.Status.BAD_REQUEST).build();
     }
+    
+    @GET
+    @Path("/LayHoaDonTheoNguoiDung/{nguoiDungId}")
+    public Response layHoaDonTheoNguoiDung(@PathParam("nguoiDungId") int nguoiDungId) {
+
+        List<HoaDon> ds = service.layHoaDonTheoNguoiDung(nguoiDungId);
+
+        return ds != null
+                ? Response.ok(ds).build()
+                : Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Không lấy được hóa đơn theo người dùng")
+                        .build();
+    }
 }

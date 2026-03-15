@@ -29,7 +29,7 @@ public class XemThongTin extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	request.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
@@ -107,6 +107,7 @@ public class XemThongTin extends HttpServlet {
         out.println("}");
 
         out.println(".navbar-brand{color:#ff6b2c !important;}");
+        out.println(".me-3{color:#ff6b2c !important;}");
 
         out.println(".btn-outline-danger{");
         out.println("border-color:#ff6b2c;");
@@ -116,6 +117,11 @@ public class XemThongTin extends HttpServlet {
         out.println(".btn-outline-danger:hover{");
         out.println("background:#ff6b2c;");
         out.println("color:white;");
+        out.println("}");
+
+        out.println(".logout-btn:hover{");
+        out.println("background:#ff6b2c !important;");
+        out.println("color:white !important;");
         out.println("}");
 
         out.println(".info-card{");
@@ -142,20 +148,18 @@ public class XemThongTin extends HttpServlet {
 
         /* NAVBAR */
 
-        out.println("<nav class='navbar bg-white border-bottom'>");
+        out.println("<nav class='navbar bg-white border-bottom shadow-sm'>");
         out.println("<div class='container'>");
 
-        out.println("<span class='navbar-brand fw-bold'>Quản Lý Đặt Thức Ăn</span>");
+        out.println("<span class='navbar-brand fw-bold' style='color:#ff6b2c;'>Quản Lý Đặt Thức Ăn</span>");
 
         out.println("<div class='d-flex align-items-center'>");
 
-        out.println("<a href='TrangChu' class='btn btn-danger btn-sm me-2'>");
-        out.println("<i class='bi bi-house'></i>");
-        out.println("</a>");
+        out.println("<a href='TrangChu' class='btn btn-outline-danger btn-sm me-2'><i class='bi bi-house'></i> Trang chủ</a>");
 
-        out.println("<span class='me-3 text-danger'>Xin chào <b>" + hoTen + "</b></span>");
+        out.println("<span class='me-3' style='color:#ff6b2c;'>Xin chào <b>" + hoTen + "</b></span>");
 
-        out.println("<a href='DangXuat' class='btn btn-outline-danger btn-sm'>Đăng xuất</a>");
+        out.println("<a href='DangXuat' class='btn btn-sm logout-btn' style='border:1px solid #ff6b2c; color:#ff6b2c; background:white;'>Đăng xuất</a>");
 
         out.println("</div>");
         out.println("</div>");

@@ -24,94 +24,73 @@ public class QuanLyNguoiDung extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        if(session == null || session.getAttribute("user") == null){
+        if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect("DangNhap");
             return;
         }
 
         NguoiDung nd = (NguoiDung) session.getAttribute("user");
+        String hoTen = nd.getHoTen() != null ? nd.getHoTen() : "";
 
         out.println("<!DOCTYPE html>");
-        out.println("<html>");
+        out.println("<html lang='vi'>");
         out.println("<head>");
-
         out.println("<meta charset='UTF-8'>");
         out.println("<title>Quản lý tài khoản</title>");
-
         out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel='stylesheet'>");
         out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css' rel='stylesheet'>");
 
         out.println("<style>");
-
         out.println("body{background:#f8f9fa;font-family:system-ui;}");
-
-        out.println(".navbar-brand{color:#ff6b2c !important;}");
-        out.println(".me-3{color:#ff6b2c !important;}");
-
-        out.println(".btn-outline-danger{border-color:#ff6b2c;color:#ff6b2c;}");
-        out.println(".btn-outline-danger:hover{background:#ff6b2c;color:white;}");
-
-        out.println(".card-box{");
-        out.println("background:white;");
-        out.println("border-radius:14px;");
-        out.println("border:1px solid #eee;");
-        out.println("transition:all .25s;");
-        out.println("cursor:pointer;");
-        out.println("width:100%;");
-        out.println("height:130px;");
-        out.println("display:flex;");
-        out.println("flex-direction:column;");
-        out.println("justify-content:center;");
-        out.println("align-items:center;");
-        out.println("}");
-
-        out.println(".card-box:hover{");
-        out.println("transform:translateY(-5px);");
-        out.println("box-shadow:0 10px 25px rgba(0,0,0,0.08);");
-        out.println("border-color:#ff6b2c;");
-        out.println("}");
-
+        out.println(".custom-navbar{background:#fff;padding:18px 0;border-bottom:1px solid #eee;}");
+        out.println(".navbar-brand-custom{font-size:22px;font-weight:700;color:#ff6b2c;text-decoration:none;display:flex;align-items:center;gap:10px;}");
+        out.println(".navbar-brand-custom:hover{color:#ff6b2c;}");
+        out.println(".nav-pill{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:999px;font-size:15px;font-weight:500;text-decoration:none;transition:all .2s ease;}");
+        out.println(".nav-outline-red{border:1px solid #f1b0b7;color:#dc3545;background:#fff;}");
+        out.println(".nav-outline-red:hover{background:#fff5f5;color:#dc3545;}");
+        out.println(".nav-solid-red{border:1px solid #dc3545;background:#dc3545;color:#fff;}");
+        out.println(".nav-solid-red:hover{background:#bb2d3b;color:#fff;}");
+        out.println(".nav-outline-gray{border:1px solid #9aa4af;color:#6c757d;background:#fff;}");
+        out.println(".nav-outline-gray:hover{background:#f8f9fa;color:#495057;}");
+        out.println(".nav-hello{color:#dc3545;font-size:15px;font-weight:600;white-space:nowrap;}");
+        out.println(".card-box{background:white;border-radius:14px;border:1px solid #eee;transition:all .25s;cursor:pointer;width:100%;height:130px;display:flex;flex-direction:column;justify-content:center;align-items:center;}");
+        out.println(".card-box:hover{transform:translateY(-5px);box-shadow:0 10px 25px rgba(0,0,0,0.08);border-color:#ff6b2c;}");
         out.println(".icon-box{font-size:34px;color:#ff6b2c;}");
-
         out.println(".row .col-md-4{display:flex;}");
-
         out.println("</style>");
 
         out.println("</head>");
         out.println("<body>");
 
-        /* NAVBAR */
+        out.println("<nav class='custom-navbar'>");
+        out.println("<div class='container d-flex justify-content-between align-items-center'>");
 
-        out.println("<nav class='navbar bg-white border-bottom'>");
-        out.println("<div class='container'>");
-
-        out.println("<span class='navbar-brand fw-bold'>Quản Lý Đặt Thức Ăn</span>");
-
-        out.println("<div class='d-flex align-items-center'>");
-
-        out.println("<a href='TrangChu' class='btn btn-danger btn-sm me-2'>");
-        out.println("<i class='bi bi-house'></i>");
+        out.println("<a href='TrangChu' class='navbar-brand-custom'>");
+        out.println("<i class='bi bi-bag-heart-fill'></i>");
+        out.println("<span>Quản Lý Đặt Thức Ăn</span>");
         out.println("</a>");
 
-        out.println("<span class='me-3'>Xin chào <b>"+ nd.getHoTen() +"</b></span>");
+        out.println("<div class='d-flex align-items-center gap-2'>");
 
-        out.println("<a href='DangXuat' class='btn btn-outline-danger btn-sm'>Đăng xuất</a>");
+        out.println("<a href='TrangChu' class='btn btn-outline-danger btn-sm rounded-pill px-3'>");
+        out.println("<i class='bi bi-house-door-fill me-1'></i>Trang chủ");
+        out.println("</a>");
+
+        if (nd != null) {
+            out.println("<span class='nav-hello ms-2'>Xin chào, <b>" + nd.getHoTen() + "</b></span>");
+            out.println("<a href='DangXuat' class='btn btn-outline-secondary btn-sm rounded-pill px-3 ms-2'>");
+            out.println("<i class='bi bi-box-arrow-right me-1'></i>Đăng xuất");
+            out.println("</a>");
+        }
 
         out.println("</div>");
         out.println("</div>");
         out.println("</nav>");
 
-        /* CONTENT */
-
         out.println("<div class='container d-flex justify-content-center align-items-center' style='min-height:80vh;'>");
-
         out.println("<div class='bg-white p-5 rounded shadow' style='max-width:650px;width:100%;'>");
-
-        out.println("<h4 class='text-center mb-4 fw-bold'>Quản lý tài khoản</h4>");
-
+        out.println("<h4 class='text-center mb-4 fw-bold' style='color:#ff6b2c;'>Quản lý tài khoản</h4>");
         out.println("<div class='row g-4'>");
-
-        /* XEM THÔNG TIN */
 
         out.println("<div class='col-md-4'>");
         out.println("<a href='XemThongTin' class='text-decoration-none text-dark d-block w-100'>");
@@ -122,18 +101,14 @@ public class QuanLyNguoiDung extends HttpServlet {
         out.println("</a>");
         out.println("</div>");
 
-        /* CHỈNH SỬA */
-
         out.println("<div class='col-md-4'>");
-        out.println("<a href='ChinhSuaThongTin' class='text-decoration-none text-dark d-block w-100'>");
+        out.println("<a href='CapNhatThongTin' class='text-decoration-none text-dark d-block w-100'>");
         out.println("<div class='card-box'>");
         out.println("<div class='icon-box'><i class='bi bi-pencil'></i></div>");
         out.println("<div class='mt-2 fw-semibold'>Chỉnh sửa</div>");
         out.println("</div>");
         out.println("</a>");
         out.println("</div>");
-
-        /* ĐỔI MẬT KHẨU */
 
         out.println("<div class='col-md-4'>");
         out.println("<a href='DoiMatKhau' class='text-decoration-none text-dark d-block w-100'>");

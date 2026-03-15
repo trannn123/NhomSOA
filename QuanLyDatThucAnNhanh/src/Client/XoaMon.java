@@ -41,7 +41,7 @@ public class XoaMon extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String id = request.getParameter("id");
-
+		System.out.println("Lay id cua mon de xoa " + id);
 		target.path("rest")
 			  .path("quanly")
 			  .path("XoaMon")

@@ -288,4 +288,32 @@ public class QuanLyWS {
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(ct, MediaType.APPLICATION_JSON), String.class);
     }
+    
+    @GET
+    @Path("/LayHoaDonTheoNguoiDung/{nguoiDungId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<HoaDon> layHoaDonTheoNguoiDung(@PathParam("nguoiDungId") int nguoiDungId) {
+        return target3
+                .path("rest")
+                .path("hoadon")
+                .path("LayHoaDonTheoNguoiDung")
+                .path(String.valueOf(nguoiDungId))
+                .request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<HoaDon>>() {});
+    }
+    
+    @GET
+    @Path("/LayChiTietHoaDon/{hoaDonId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ChiTietHoaDon> layChiTietHoaDon(@PathParam("hoaDonId") int hoaDonId) {
+        return target3
+                .path("rest")
+                .path("hoadon")
+                .path("LayChiTietHoaDon")
+                .path(String.valueOf(hoaDonId))
+                .request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChiTietHoaDon>>() {});
+    }
+
+
 }

@@ -11,5 +11,6 @@ public interface IHoaDon {
     List<HoaDon> layDanhSachHoaDon();
 
     List<ChiTietHoaDon> layChiTietHoaDon(int hoaDonId);
+    List<HoaDon> layHoaDonTheoNguoiDung(int nguoiDungId);
 
 }

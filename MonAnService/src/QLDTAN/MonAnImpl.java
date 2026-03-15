@@ -167,4 +167,43 @@ public class MonAnImpl implements IMonAn {
 
         return mon;
     }
+    
+    @Override
+    public List<MonAn> layDanhSachMonCon() {
+
+        List<MonAn> list = new ArrayList<>();
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            String sql = "SELECT * FROM monan WHERE trang_thai = ?";
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, "con");
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                MonAn m = new MonAn();
+
+                m.setId(rs.getInt("id"));
+                m.setTenMon(rs.getString("ten_mon"));
+                m.setGia(rs.getDouble("gia"));
+                m.setSoLuong(rs.getInt("so_luong"));
+                m.setTrangThai(rs.getString("trang_thai"));
+                m.setMoTa(rs.getString("mo_ta"));
+                m.setNgayTao(rs.getTimestamp("ngay_tao"));
+
+                list.add(m);
+            }
+
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
 }

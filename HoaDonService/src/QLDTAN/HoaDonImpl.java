@@ -15,14 +15,13 @@ public class HoaDonImpl implements IHoaDon {
 	    try {
 	    	Connection conn = DBConnection.getConnection();
 
-	        String sql = "INSERT INTO hoadon(nguoi_dung_id, ngay_dat, trang_thai, tong_tien, tong_so_luong) VALUES(?,?,?,?,?)";
+	        String sql = "INSERT INTO hoadon(nguoi_dung_id, trang_thai, tong_tien, tong_so_luong) VALUES(?,?,?,?)";
 
 	        PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 	        ps.setInt(1, hd.getNguoiDungId());
-	        ps.setString(2, hd.getNgayDat());
-	        ps.setString(3, hd.getTrangThai());
-	        ps.setDouble(4, hd.getTongTien());
-	        ps.setInt(5, hd.getTongSoLuong());
+	        ps.setString(2, hd.getTrangThai());
+	        ps.setDouble(3, hd.getTongTien());
+	        ps.setInt(4, hd.getTongSoLuong());
 
 	        ps.executeUpdate();
 
@@ -133,4 +132,46 @@ public class HoaDonImpl implements IHoaDon {
 
         return ds;
     }
+    
+    @Override
+    public List<HoaDon> layHoaDonTheoNguoiDung(int nguoiDungId) {
+
+        List<HoaDon> ds = new ArrayList<>();
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            String sql = "SELECT * FROM hoadon WHERE nguoi_dung_id = ?";
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, nguoiDungId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                HoaDon hd = new HoaDon();
+
+                hd.setId(rs.getInt("id"));
+                hd.setNguoiDungId(rs.getInt("nguoi_dung_id"));
+                hd.setNgayDat(rs.getString("ngay_dat"));
+                hd.setTrangThai(rs.getString("trang_thai"));
+                hd.setTongTien(rs.getDouble("tong_tien"));
+                hd.setTongSoLuong(rs.getInt("tong_so_luong"));
+
+                ds.add(hd);
+            }
+
+            rs.close();
+            ps.close();
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ds;
+    }
+
+
 }

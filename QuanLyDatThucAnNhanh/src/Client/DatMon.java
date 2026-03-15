@@ -113,7 +113,7 @@ public class DatMon extends HttpServlet {
 
         session.removeAttribute("cart");
 
-        response.sendRedirect("DanhSachMonAn");
+        response.sendRedirect("HoaDonDaDat");
 	}
 
 	/**

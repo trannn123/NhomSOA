@@ -14,9 +14,20 @@ public class MonAnWS {
     IMonAn service = new MonAnImpl();
     @GET
     @Path("/LayDanhSachMonCon")
-    public Response layDSMon() {
+    public Response layDanhSachMonCon() {
+        List<MonAn> kq = service.layDanhSachMonCon();
+        return kq != null
+                ? Response.ok(kq).build()
+                : Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    @GET
+    @Path("/LayDanhSachMonAn")
+    public Response layDanhSachMonAn() {
         List<MonAn> kq = service.layDanhSachMon();
-        return kq!=null ? Response.ok(kq).build() : Response.status(Response.Status.BAD_REQUEST).build();
+        return kq != null
+                ? Response.ok(kq).build()
+                : Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     @POST
