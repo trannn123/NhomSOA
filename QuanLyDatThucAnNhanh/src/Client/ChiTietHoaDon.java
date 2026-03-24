@@ -26,12 +26,14 @@ import QLDTAN.NguoiDung;
 public class ChiTietHoaDon extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    private static final URI uri =
-            UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh/").build();
-
+    private static final URI URI_HOADON =
+            UriBuilder.fromUri("http://localhost:8080/HoaDonService").build();
+    private static final URI URI_MONAN =
+            UriBuilder.fromUri("http://localhost:8080/MonAnService").build();
     ClientConfig config = new ClientConfig();
     Client client = ClientBuilder.newClient(config);
-    WebTarget target = client.target(uri);
+    WebTarget target_HoaDon = client.target(URI_HOADON);
+    WebTarget target_MonAn = client.target(URI_MONAN);
 
     public ChiTietHoaDon() {
         super();
@@ -58,9 +60,9 @@ public class ChiTietHoaDon extends HttpServlet {
         List<QLDTAN.ChiTietHoaDon> dsChiTiet = null;
 
         try {
-        	dsChiTiet = target
+        	dsChiTiet = target_HoaDon
         	        .path("rest")
-        	        .path("quanly")
+        	        .path("hoadon")
         	        .path("LayChiTietHoaDon")
         	        .path(String.valueOf(hoaDonId))
         	        .request(MediaType.APPLICATION_JSON)
@@ -135,13 +137,12 @@ public class ChiTietHoaDon extends HttpServlet {
                 String tenMon = "Không xác định";
 
                 try {
-                    MonAn mon = target
-                            .path("rest")
-                            .path("quanly")
-                            .path("TimMon")
-                            .path(String.valueOf(ct.getMonAnId()))
-                            .request(MediaType.APPLICATION_JSON)
-                            .get(MonAn.class);
+                    MonAn mon = target_MonAn.path("rest")
+                    	      .path("monan")
+                    	      .path("TimMon")
+                    	      .path(String.valueOf(ct.getMonAnId()))
+                    	      .request(MediaType.APPLICATION_JSON)
+                    	      .get(MonAn.class);
 
                     if (mon != null) {
                         tenMon = mon.getTenMon();

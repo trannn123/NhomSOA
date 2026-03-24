@@ -15,6 +15,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.client.ClientConfig;
@@ -30,96 +31,96 @@ import QLDTAN.NguoiDung;
 @WebServlet("/DatMon")
 public class DatMon extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-	private static final URI uri =
-            UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh/").build();
-
-    ClientConfig config = new ClientConfig();
-    Client client = ClientBuilder.newClient(config);
-    WebTarget target = client.target(uri);
-    public DatMon() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private static final URI uri = UriBuilder.fromUri("http://localhost:8080/HoaDonService").build();
+
+	ClientConfig config = new ClientConfig();
+	Client client = ClientBuilder.newClient(config);
+	WebTarget target = client.target(uri);
+
+	public DatMon() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		HttpSession session = request.getSession();
 
 		NguoiDung nd = (NguoiDung) session.getAttribute("user");
 
-		if(nd == null){
-		    response.sendRedirect("DangNhap");
-		    return;
+		if (nd == null) {
+			response.sendRedirect("DangNhap");
+			return;
 		}
-        List<GioHang> cart = (List<GioHang>) session.getAttribute("cart");
-      
+		List<GioHang> cart = (List<GioHang>) session.getAttribute("cart");
 
-        if (cart == null || cart.isEmpty()) {
-            response.sendRedirect("DanhSachMonAn");
-            return;
-        }
+		if (cart == null || cart.isEmpty()) {
+			response.sendRedirect("DanhSachMonAn");
+			return;
+		}
 
-        double tongTien = 0;
-        int tongSoLuong = 0;
+		double tongTien = 0;
+		int tongSoLuong = 0;
 
-        for (GioHang g : cart) {
-            tongTien += g.getThanhTien();
-            tongSoLuong += g.getSoLuong();
-        }
+		for (GioHang g : cart) {
+			tongTien += g.getThanhTien();
+			tongSoLuong += g.getSoLuong();
+		}
 
-        // ======================
-        // TẠO HÓA ĐƠN
-        // ======================
+		HoaDon hd = new HoaDon();
 
-        HoaDon hd = new HoaDon();
+		hd.setNguoiDungId(nd.getId());
+		hd.setTongTien(tongTien);
+		hd.setTongSoLuong(tongSoLuong);
+		hd.setTrangThai("dang_xu_ly");
 
-        hd.setNguoiDungId(nd.getId());
-        hd.setTongTien(tongTien);
-        hd.setTongSoLuong(tongSoLuong);
-        hd.setTrangThai("dang_xu_ly");
+		int hoaDonId = target.path("rest").path("hoadon").path("TaoHoaDon").request(MediaType.APPLICATION_JSON)
+				.post(Entity.entity(hd, MediaType.APPLICATION_JSON), Integer.class);
+		if (hoaDonId <= 0) {
+			response.sendRedirect("DanhSachMonAn");
+			return;
+		}
 
-        int hoaDonId = target
-                .path("rest")
-                .path("quanly")
-                .path("TaoHoaDon")
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(hd, MediaType.APPLICATION_JSON), Integer.class);
-        // ======================
-        // THÊM CHI TIẾT HÓA ĐƠN
-        // ======================
+		for (GioHang g : cart) {
 
-        for (GioHang g : cart) {
+			ChiTietHoaDon ct = new ChiTietHoaDon();
 
-            ChiTietHoaDon ct = new ChiTietHoaDon();
+			ct.setHoaDonId(hoaDonId);
+			ct.setMonAnId(g.getMon().getId());
+			ct.setSoLuong(g.getSoLuong());
+			ct.setGia(g.getMon().getGia());
 
-            ct.setHoaDonId(hoaDonId);
-            ct.setMonAnId(g.getMon().getId());
-            ct.setSoLuong(g.getSoLuong());
-            ct.setGia(g.getMon().getGia());
+			Response res = target.path("rest").path("hoadon").path("ThemChiTietHoaDon")
+					.request(MediaType.APPLICATION_JSON).post(Entity.entity(ct, MediaType.APPLICATION_JSON));
 
-            target
-                .path("rest")
-                .path("quanly")
-                .path("ThemChiTietHoaDon")
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(ct, MediaType.APPLICATION_JSON), String.class);
-        }
+			if (res.getStatus() != 200) {
+				res.close();
+				response.sendRedirect("DanhSachMonAn");
+				return;
+			}
 
-        session.removeAttribute("cart");
+			res.close();
+		}
 
-        response.sendRedirect("HoaDonDaDat");
+		session.removeAttribute("cart");
+
+		response.sendRedirect("HoaDonDaDat");
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

@@ -147,7 +147,11 @@ public class XemGioHang extends HttpServlet {
                 out.println("<div class='qty-control'>");
                 out.println("<a href='GiamGioHang?id=" + g.getMon().getId() + "&from=cart' class='qty-btn btn-minus'>-</a>");
                 out.println("<div class='qty-number'>" + g.getSoLuong() + "</div>");
-                out.println("<a href='ThemGioHang?id=" + g.getMon().getId() + "&from=cart' class='qty-btn btn-plus'>+</a>");
+                if (g.getSoLuong() < g.getMon().getSoLuong()) {
+                    out.println("<a href='ThemGioHang?id=" + g.getMon().getId() + "&from=cart' class='qty-btn btn-plus'>+</a>");
+                } else {
+                    out.println("<span class='qty-btn btn-plus' style='opacity:0.5; pointer-events:none;'>+</span>");
+                }
                 out.println("</div>");
                 out.println("</td>");
 

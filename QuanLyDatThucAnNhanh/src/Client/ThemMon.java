@@ -12,11 +12,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.client.ClientConfig;
 
+import QLDTAN.MonAn;
 import QLDTAN.NguoiDung;
 
 /**
@@ -29,7 +33,7 @@ public class ThemMon extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-	private static final URI uri = UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh").build();
+	private static final URI uri = UriBuilder.fromUri("http://localhost:8080/MonAnService").build();
 	ClientConfig config = new ClientConfig();
 	Client client = ClientBuilder.newClient(config);
 	WebTarget target = client.target(uri);
@@ -58,23 +62,30 @@ public class ThemMon extends HttpServlet {
 		String gia = request.getParameter("gia");
 		String soluong = request.getParameter("soluong");
 		String mota = request.getParameter("mota");
-		if (ten != null && gia != null && soluong != null && mota != null) {
+		if (ten != null && !ten.trim().isEmpty()
+			    && gia != null && !gia.trim().isEmpty()
+			    && soluong != null && !soluong.trim().isEmpty()) {
 
 			try {
-
-				target
-			    .path("rest")
-			    .path("quanly")
-			    .path("ThemMon")
-			    .path(ten)
-			    .path(gia)
-			    .path(soluong)
-			    .path(mota)
-			    .request()
-			    .post(null);
-
-				response.sendRedirect("QuanLyMon");
-				return;
+				MonAn m = new MonAn();
+				m.setTenMon(ten);
+				m.setGia(Double.parseDouble(gia));
+				m.setSoLuong(Integer.parseInt(soluong));
+				m.setMoTa(mota);
+				
+				Response res = target
+					    .path("rest")
+					    .path("monan")
+					    .path("ThemMon")
+					    .request(MediaType.APPLICATION_JSON)
+					    .post(Entity.json(m));
+				if (res.getStatus() == 200 || res.getStatus() == 201) {
+				    response.sendRedirect("QuanLyMon");
+				    return;
+				} else {
+				    out.println("<h3 class='text-danger'>Thêm thất bại</h3>");
+				    return;
+				}
 
 			} catch (Exception e) {
 
@@ -150,7 +161,7 @@ public class ThemMon extends HttpServlet {
 
 		out.println("<h2 class='title mb-4'><i class='bi bi-plus-circle'></i> Thêm món ăn</h2>");
 
-		out.println("<form>");
+		out.println("<form method='post'>");
 
 		out.println("<div class='mb-3'>");
 		out.println("<label class='form-label'>Tên món</label>");

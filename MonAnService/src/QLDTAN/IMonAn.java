@@ -9,4 +9,5 @@ public interface IMonAn {
     boolean suaMon(MonAn m);
     boolean xoaMon(int id);
     MonAn timMonTheoId(int id);
+    boolean giamSoLuongMon(int id, int number);
 }

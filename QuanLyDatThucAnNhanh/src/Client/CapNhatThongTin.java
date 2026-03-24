@@ -15,6 +15,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.client.ClientConfig;
@@ -26,7 +27,7 @@ public class CapNhatThongTin extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private static final URI uri =
-            UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh/").build();
+            UriBuilder.fromUri("http://localhost:8080/NguoiDungService").build();
 
     Client client = ClientBuilder.newClient(new ClientConfig());
     WebTarget target = client.target(uri);
@@ -171,29 +172,33 @@ public class CapNhatThongTin extends HttpServlet {
         String sdt = request.getParameter("sdt");
         String diaChi = request.getParameter("diachi");
 
-        user.setHoTen(hoTen);
-        user.setEmail(email);
-        user.setSoDienThoai(sdt);
-        user.setDiaChi(diaChi);
-
-        int id = user.getId();
+        NguoiDung ndUpdate = new NguoiDung();
+        ndUpdate.setId(user.getId());
+        ndUpdate.setTenDangNhap(user.getTenDangNhap());
+        ndUpdate.setHoTen(hoTen);
+        ndUpdate.setEmail(email);
+        ndUpdate.setSoDienThoai(sdt);
+        ndUpdate.setDiaChi(diaChi);
 
         try {
-            target.path("rest")
-                  .path("quanly")
-                  .path("CapNhatThongTin")
-                  .path(String.valueOf(id))
-                  .path(hoTen)
-                  .path(email)
-                  .path(sdt)
-                  .path(diaChi)
+            Response res = target.path("rest")
+                  .path("nguoidung")
+                  .path("CapNhat")
                   .request(MediaType.APPLICATION_JSON)
-                  .post(Entity.json(""));
-
-            session.setAttribute("user", user);
+                  .put(Entity.entity(ndUpdate, MediaType.APPLICATION_JSON));
+            if (res.getStatus() != 200) {
+                session.setAttribute("error", "Cập nhật thất bại!");
+                response.sendRedirect("CapNhatThongTin");
+                return;
+            }
+            res.close();
+            session.setAttribute("user", ndUpdate);
 
         } catch (Exception e) {
-            e.printStackTrace();
+        	e.printStackTrace();
+            session.setAttribute("error", "Lỗi hệ thống!");
+            response.sendRedirect("CapNhatThongTin");
+            return;
         }
 
         response.sendRedirect("XemThongTin");

@@ -1,26 +1,30 @@
 package QLDTAN;
 
+import java.util.List;
+
 public class HoaDon {
 
     private int id;
-    private int nguoiDungId;
-    private String ngayDat;
     private String trangThai;
     private double tongTien;
     private int tongSoLuong;
-
-    // Constructor rỗng
+    private int nguoiDungId;
+    private MyDate ngayDat;
+    private List<ChiTietHoaDon> danhSachChiTietHoaDon;
+    
     public HoaDon() {}
 
-    // Constructor đầy đủ tham số
-    public HoaDon(int id, int nguoiDungId, String ngayDat, String trangThai, double tongTien, int tongSoLuong) {
-        this.id = id;
-        this.nguoiDungId = nguoiDungId;
-        this.ngayDat = ngayDat;
-        this.trangThai = trangThai;
-        this.tongTien = tongTien;
-        this.tongSoLuong = tongSoLuong;
-    }
+    public HoaDon(int id, int nguoiDungId, MyDate ngayDat, String trangThai,
+            double tongTien, int tongSoLuong,
+            List<ChiTietHoaDon> danhSachChiTietHoaDon) {
+	  this.id = id;
+	  this.nguoiDungId = nguoiDungId;
+	  this.ngayDat = ngayDat;
+	  this.trangThai = trangThai;
+	  this.tongTien = tongTien;
+	  this.tongSoLuong = tongSoLuong;
+	  this.danhSachChiTietHoaDon = danhSachChiTietHoaDon;
+	}
 
     public int getId() {
         return id;
@@ -38,11 +42,11 @@ public class HoaDon {
         this.nguoiDungId = nguoiDungId;
     }
 
-    public String getNgayDat() {
+    public MyDate getNgayDat() {
         return ngayDat;
     }
 
-    public void setNgayDat(String ngayDat) {
+    public void setNgayDat(MyDate ngayDat) {
         this.ngayDat = ngayDat;
     }
 
@@ -68,5 +72,13 @@ public class HoaDon {
 
     public void setTongSoLuong(int tongSoLuong) {
         this.tongSoLuong = tongSoLuong;
+    }
+    
+    public List<ChiTietHoaDon> getDanhSachChiTietHoaDon() {
+        return danhSachChiTietHoaDon;
+    }
+
+    public void setDanhSachChiTietHoaDon(List<ChiTietHoaDon> danhSachChiTietHoaDon) {
+        this.danhSachChiTietHoaDon = danhSachChiTietHoaDon;
     }
 }

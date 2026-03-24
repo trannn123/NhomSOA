@@ -9,8 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.client.ClientConfig;
@@ -22,7 +24,7 @@ public class DoiMatKhau extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private static final URI uri =
-            UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh/").build();
+            UriBuilder.fromUri("http://localhost:8080/ChungThucService").build();
 
     Client client = ClientBuilder.newClient(new ClientConfig());
     WebTarget target = client.target(uri);
@@ -144,31 +146,46 @@ public class DoiMatKhau extends HttpServlet {
         String tenDangNhap = user.getTenDangNhap();
 
         try {
-            String ketQua = target.path("rest")
-                    .path("quanly")
+        	NguoiDung ndCheck = new NguoiDung();
+            ndCheck.setTenDangNhap(user.getTenDangNhap());
+            ndCheck.setMatKhau(matKhauCu);
+            
+            String ketQua = target
+                    .path("rest")
+                    .path("chungthuc")
                     .path("KiemTraMatKhau")
-                    .path(tenDangNhap)
-                    .path(matKhauCu)
                     .request(MediaType.APPLICATION_JSON)
-                    .get(String.class);
+                    .post(Entity.entity(ndCheck, MediaType.APPLICATION_JSON), String.class);
 
             boolean hopLe = Boolean.parseBoolean(ketQua);
-
+            
             if (!hopLe) {
                 response.sendRedirect("DoiMatKhau");
                 return;
             }
-
-            target.path("rest")
-                    .path("quanly")
+            
+            NguoiDung ndUpdate = new NguoiDung();
+            ndUpdate.setTenDangNhap(user.getTenDangNhap());
+            ndUpdate.setMatKhau(matKhauMoi);
+            
+            Response res = target.path("rest")
+                    .path("chungthuc")
                     .path("DoiMatKhau")
-                    .path(tenDangNhap)
-                    .path(matKhauMoi)
                     .request(MediaType.APPLICATION_JSON)
-                    .post(null);
+                    .put(Entity.entity(ndUpdate, MediaType.APPLICATION_JSON));
+
+            if (res.getStatus() != 200) {
+                response.sendRedirect("DoiMatKhau");
+                return;
+            }
+            
+            res.close();
 
         } catch (Exception e) {
             e.printStackTrace();
+            session.setAttribute("error", "Đổi mật khẩu thất bại!");
+            response.sendRedirect("DoiMatKhau");
+            return;
         }
 
         response.sendRedirect("XemThongTin");

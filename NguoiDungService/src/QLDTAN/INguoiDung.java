@@ -1,0 +1,10 @@
+package QLDTAN;
+
+public interface INguoiDung {
+    boolean dangKy(NguoiDung nd);
+    boolean capNhatNguoiDung(NguoiDung nd);
+    NguoiDung xemThongTin(String tenDangNhap);
+    boolean doiMatKhau(String tenDangNhap, String matKhauMoi);
+    boolean xoaNguoiDung(String tenDangNhap);
+    NguoiDung timTheoId(int id);
+}

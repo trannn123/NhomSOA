@@ -1,10 +1,6 @@
 INDEX VERSION 1.4+C:\Users\PC-ASUS\OneDrive\Tài liệu\SV CTU\NĂM 4 HK2\HDV\Nhom\workspace\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+3097821186.index
 2262277975.index
 2465332262.index
-1871521229.index
-1085358250.index
 129603480.index
-3405014760.index
-4165026737.index
-1924203365.index
 2169434582.index

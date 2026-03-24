@@ -32,12 +32,6 @@ public class DangXuat extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-	private static final URI uri =
-            UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh").build();
-
-    ClientConfig config = new ClientConfig();
-    Client client = ClientBuilder.newClient(config);
-    WebTarget target = client.target(uri);
     public DangXuat() {
         super();
         // TODO Auto-generated constructor stub
@@ -60,6 +54,7 @@ public class DangXuat extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
 	}
 
 }

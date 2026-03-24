@@ -12,23 +12,18 @@ public class HoaDonWS {
 
     IHoaDon service = new HoaDonImpl();
 
-    // Tạo hóa đơn
     @POST
     @Path("/TaoHoaDon")
     public Response taoHoaDon(HoaDon hd) {
-
         int id = service.taoHoaDon(hd);
-
         if (id > 0) {
             return Response.ok(id).build();
         }
-
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity("Tạo hóa đơn thất bại")
                 .build();
     }
 
-    // Thêm chi tiết hóa đơn
     @POST
     @Path("/ThemChiTietHoaDon")
     public Response themChiTietHoaDon(ChiTietHoaDon ct) {
@@ -44,7 +39,6 @@ public class HoaDonWS {
                 .build();
     }
 
-    // Lấy danh sách hóa đơn
     @GET
     @Path("/LayDanhSachHoaDon")
     public Response layDanhSachHoaDon() {
@@ -56,7 +50,6 @@ public class HoaDonWS {
                 : Response.status(Response.Status.BAD_REQUEST).build();
     }
 
-    // Lấy chi tiết hóa đơn
     @GET
     @Path("/LayChiTietHoaDon/{id}")
     public Response layChiTietHoaDon(@PathParam("id") int id) {

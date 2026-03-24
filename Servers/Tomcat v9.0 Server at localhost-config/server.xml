@@ -149,7 +149,7 @@
              Note: The pattern used is equivalent to using pattern="common" -->
         <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs" pattern="%h %l %u %t &quot;%r&quot; %s %b" prefix="localhost_access_log" suffix=".txt"/>
 
-      <Context docBase="QuanLyDatThucAnNhanh" path="/QuanLyDatThucAnNhanh" reloadable="true" source="org.eclipse.jst.jee.server:QuanLyDatThucAnNhanh"/><Context docBase="ChungThucService" path="/ChungThucService" reloadable="true" source="org.eclipse.jst.jee.server:ChungThucService"/><Context docBase="MonAnService" path="/MonAnService" reloadable="true" source="org.eclipse.jst.jee.server:MonAnService"/><Context docBase="HoaDonService" path="/HoaDonService" reloadable="true" source="org.eclipse.jst.jee.server:HoaDonService"/></Host>
+      <Context docBase="QuanLyDatThucAnNhanh" path="/QuanLyDatThucAnNhanh" reloadable="true" source="org.eclipse.jst.jee.server:QuanLyDatThucAnNhanh"/><Context docBase="ChungThucService" path="/ChungThucService" reloadable="true" source="org.eclipse.jst.jee.server:ChungThucService"/><Context docBase="MonAnService" path="/MonAnService" reloadable="true" source="org.eclipse.jst.jee.server:MonAnService"/><Context docBase="HoaDonService" path="/HoaDonService" reloadable="true" source="org.eclipse.jst.jee.server:HoaDonService"/><Context docBase="NguoiDungService" path="/NguoiDungService" reloadable="true" source="org.eclipse.jst.jee.server:NguoiDungService"/></Host>
     </Engine>
   </Service>
 </Server>

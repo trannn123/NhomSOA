@@ -32,7 +32,7 @@ public class TimMon extends HttpServlet {
      * @see HttpServlet#HttpServlet()
      */
 	private static final URI uri =
-            UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh").build();
+            UriBuilder.fromUri("http://localhost:8080/MonAnService").build();
 
     ClientConfig config = new ClientConfig();
     Client client = ClientBuilder.newClient(config);
@@ -149,36 +149,40 @@ public class TimMon extends HttpServlet {
 
 		    	MonAn m = target
 		    	        .path("rest")
-		    	        .path("quanly")
+		    	        .path("monan")
 		    	        .path("TimMon")
 		    	        .path(id)
 		    	        .request(MediaType.APPLICATION_JSON)
 		    	        .get(MonAn.class);
+		    	if (m == null) {
+		    	    out.println("<div class='alert alert-danger'>Không tìm thấy món</div>");
+		    	} else {
+		    		out.println("<div class='card p-4'>");
 
-		        out.println("<div class='card p-4'>");
+			        out.println("<h5 class='mb-3'>Kết quả tìm kiếm</h5>");
 
-		        out.println("<h5 class='mb-3'>Kết quả tìm kiếm</h5>");
+			        out.println("<p><b>ID:</b> " + m.getId() + "</p>");
+			        out.println("<p><b>Tên món:</b> " + m.getTenMon() + "</p>");
+			        out.println("<p><b>Mô tả:</b> " + m.getMoTa() + "</p>");
+			        out.println("<p><b>Số lượng:</b> " + m.getSoLuong() + "</p>");
+			        out.println("<p><b>Giá:</b> " + m.getGia() + "</p>");
+			        out.println("<p><b>Trạng thái:</b> " + m.getTrangThai() + "</p>");
 
-		        out.println("<p><b>ID:</b> " + m.getId() + "</p>");
-		        out.println("<p><b>Tên món:</b> " + m.getTenMon() + "</p>");
-		        out.println("<p><b>Mô tả:</b> " + m.getMoTa() + "</p>");
-		        out.println("<p><b>Số lượng:</b> " + m.getSoLuong() + "</p>");
-		        out.println("<p><b>Giá:</b> " + m.getGia() + "</p>");
-		        out.println("<p><b>Trạng thái:</b> " + m.getTrangThai() + "</p>");
+			        out.println("<div class='mt-3'>");
 
-		        out.println("<div class='mt-3'>");
+			        out.println("<a class='btn btn-outline-main me-2' href='SuaMon?id=" + m.getId() + "'>");
+			        out.println("<i class='bi bi-pencil'></i> Sửa");
+			        out.println("</a>");
 
-		        out.println("<a class='btn btn-outline-main me-2' href='SuaMon?id=" + m.getId() + "'>");
-		        out.println("<i class='bi bi-pencil'></i> Sửa");
-		        out.println("</a>");
+			        out.println("<a class='btn btn-main' onclick=\"return confirm('Bạn có chắc muốn xóa món này?')\" href='XoaMon?id=" + m.getId() + "'>");
+			        out.println("<i class='bi bi-trash'></i> Xóa");
+			        out.println("</a>");
 
-		        out.println("<a class='btn btn-main' onclick=\"return confirm('Bạn có chắc muốn xóa món này?')\" href='XoaMon?id=" + m.getId() + "'>");
-		        out.println("<i class='bi bi-trash'></i> Xóa");
-		        out.println("</a>");
+			        out.println("</div>");
 
-		        out.println("</div>");
-
-		        out.println("</div>");
+			        out.println("</div>");
+		    	}
+		        
 
 		    }catch(Exception e){
 

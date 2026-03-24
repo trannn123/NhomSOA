@@ -28,7 +28,7 @@ public class HoaDonDaDat extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private static final URI uri =
-            UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh/").build();
+            UriBuilder.fromUri("http://localhost:8080/HoaDonService").build();
 
     ClientConfig config = new ClientConfig();
     Client client = ClientBuilder.newClient(config);
@@ -57,7 +57,7 @@ public class HoaDonDaDat extends HttpServlet {
         try {
             dsHoaDon = target
                     .path("rest")
-                    .path("quanly")
+                    .path("hoadon")
                     .path("LayHoaDonTheoNguoiDung")
                     .path(String.valueOf(nd.getId()))
                     .request(MediaType.APPLICATION_JSON)

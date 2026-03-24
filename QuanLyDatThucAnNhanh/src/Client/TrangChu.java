@@ -28,12 +28,6 @@ import QLDTAN.NguoiDung;
 public class TrangChu extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    private static final URI uri = UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh").build();
-
-    ClientConfig config = new ClientConfig();
-    Client client = ClientBuilder.newClient(config);
-    WebTarget target = client.target(uri);
-
     public TrangChu() {
         super();
     }

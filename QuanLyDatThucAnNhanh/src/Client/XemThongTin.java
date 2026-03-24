@@ -21,7 +21,7 @@ public class XemThongTin extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private static final URI uri =
-            UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh/").build();
+            UriBuilder.fromUri("http://localhost:8080/NguoiDungService").build();
 
     ClientConfig config = new ClientConfig();
     Client client = ClientBuilder.newClient(config);
@@ -47,12 +47,20 @@ public class XemThongTin extends HttpServlet {
 
         try {
 
-            nd = target.path("rest")
-                    .path("quanly")
-                    .path("ThongTinNguoiDung")
-                    .path(username)
-                    .request(MediaType.APPLICATION_JSON)
-                    .get(NguoiDung.class);
+        	Response res = target.path("rest")
+        	        .path("nguoidung")
+        	        .path(username)
+        	        .request(MediaType.APPLICATION_JSON)
+        	        .get();
+
+        	if (res.getStatus() != 200) {
+        	    res.close();
+        	    out.println("<h3>Không lấy được thông tin người dùng</h3>");
+        	    return;
+        	}
+
+        	nd = res.readEntity(NguoiDung.class);
+        	res.close();
 
         } catch (Exception e) {
             e.printStackTrace();

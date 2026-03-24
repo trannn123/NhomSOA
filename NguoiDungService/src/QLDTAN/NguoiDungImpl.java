@@ -8,44 +8,13 @@ import QLDTAN.DBConnection;
 
 public class NguoiDungImpl implements INguoiDung {
 
-	@Override
-	public NguoiDung dangNhap(String tenDangNhap, String matKhau) {
-		NguoiDung nd = null;
-	    try {
-	        Connection conn = DBConnection.getConnection();
-	        String sql = "SELECT * FROM nguoidung WHERE ten_dang_nhap=? AND mat_khau=? AND trang_thai='hoatdong'";
-	        PreparedStatement ps = conn.prepareStatement(sql);
-	        ps.setString(1, tenDangNhap);
-	        String matKhauHash = PasswordUtil.hashPassword(matKhau);
-	        ps.setString(2, matKhauHash);
-	        ResultSet rs = ps.executeQuery();
-	        if (rs.next()) {
-	            nd = new NguoiDung();
-	            nd.setId(rs.getInt("id"));
-	            nd.setTenDangNhap(rs.getString("ten_dang_nhap"));
-	            nd.setHoTen(rs.getString("ho_ten"));
-	            nd.setEmail(rs.getString("email"));
-	            nd.setSoDienThoai(rs.getString("so_dien_thoai"));
-	            nd.setDiaChi(rs.getString("dia_chi"));
-	            nd.setVaiTro(rs.getString("vai_tro"));
-	            nd.setTrangThai(rs.getString("trang_thai"));
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	    return nd;
-	}
-
 	public boolean dangKy(NguoiDung nd) {
 	    boolean kq = false;
 
 	    try {
 	        Connection conn = DBConnection.getConnection();
-
 	        String sql = "INSERT INTO nguoidung(ten_dang_nhap, mat_khau, ho_ten, email, so_dien_thoai, dia_chi, vai_tro, trang_thai) VALUES(?,?,?,?,?,?,?,?)";
-
 	        PreparedStatement ps = conn.prepareStatement(sql);
-
 	        ps.setString(1, nd.getTenDangNhap());
 	        String matKhauHash = PasswordUtil.hashPassword(nd.getMatKhau());
 	        ps.setString(2, matKhauHash);
@@ -55,9 +24,8 @@ public class NguoiDungImpl implements INguoiDung {
 	        ps.setString(6, nd.getDiaChi());
 	        ps.setString(7, "khachhang");
 	        ps.setString(8, "hoatdong");
-
 	        int n = ps.executeUpdate();
-
+	        conn.close();
 	        if (n > 0) kq = true;
 
 	    } catch (Exception e) {
@@ -78,108 +46,102 @@ public class NguoiDungImpl implements INguoiDung {
 	        ps.setString(3, nd.getSoDienThoai());
 	        ps.setString(4, nd.getDiaChi());
 	        ps.setInt(5, nd.getId());
-	        return ps.executeUpdate() > 0;
+	        boolean kq = ps.executeUpdate() > 0;
+	        conn.close();
+	        return kq;
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	    return false;
 	}
 	
+	
+	
 	@Override
-	public boolean kiemTraMatKhau(String tenDangNhap, String matKhau) {
-
+	public NguoiDung xemThongTin(String tenDangNhap) {
+	    NguoiDung nd = null;
 	    try {
-
 	        Connection conn = DBConnection.getConnection();
-
-	        String sql = "SELECT * FROM nguoidung WHERE ten_dang_nhap=? AND mat_khau=?";
-
+	        String sql = "SELECT * FROM nguoidung WHERE ten_dang_nhap=?";
 	        PreparedStatement ps = conn.prepareStatement(sql);
-
 	        ps.setString(1, tenDangNhap);
-	        ps.setString(2, PasswordUtil.hashPassword(matKhau));
-
 	        ResultSet rs = ps.executeQuery();
-
-	        boolean tonTai = rs.next();
-
+	        if (rs.next()) {
+	            nd = new NguoiDung();
+	            nd.setId(rs.getInt("id"));
+	            nd.setTenDangNhap(rs.getString("ten_dang_nhap"));
+	            nd.setHoTen(rs.getString("ho_ten"));
+	            nd.setEmail(rs.getString("email"));
+	            nd.setMatKhau(rs.getString("mat_khau"));
+	            nd.setSoDienThoai(rs.getString("so_dien_thoai"));
+	            nd.setDiaChi(rs.getString("dia_chi"));
+	            nd.setVaiTro(rs.getString("vai_tro"));
+	            nd.setTrangThai(rs.getString("trang_thai"));
+	        }
 	        conn.close();
-
-	        return tonTai;
-
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-
-	    return false;
+	    return nd;
 	}
 	
 	@Override
 	public boolean doiMatKhau(String tenDangNhap, String matKhauMoi) {
-
 	    try {
-
 	        Connection conn = DBConnection.getConnection();
 
 	        String sql = "UPDATE nguoidung SET mat_khau=? WHERE ten_dang_nhap=?";
-
 	        PreparedStatement ps = conn.prepareStatement(sql);
 
 	        ps.setString(1, PasswordUtil.hashPassword(matKhauMoi));
 	        ps.setString(2, tenDangNhap);
 
 	        boolean kq = ps.executeUpdate() > 0;
-
 	        conn.close();
-
 	        return kq;
-
+	        
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-
 	    return false;
 	}
 	
 	@Override
-	public NguoiDung xemThongTin(String tenDangNhap) {
-
-	    NguoiDung nd = null;
-
+	public boolean xoaNguoiDung(String tenDangNhap) {
 	    try {
-
 	        Connection conn = DBConnection.getConnection();
-
-	        String sql = "SELECT * FROM nguoidung WHERE ten_dang_nhap=?";
-
+	        String sql = "DELETE FROM nguoidung WHERE ten_dang_nhap=?";
 	        PreparedStatement ps = conn.prepareStatement(sql);
-
 	        ps.setString(1, tenDangNhap);
-
-	        ResultSet rs = ps.executeQuery();
-
-	        if (rs.next()) {
-
-	            nd = new NguoiDung();
-
-	            nd.setId(rs.getInt("id"));
-	            nd.setTenDangNhap(rs.getString("ten_dang_nhap"));
-	            nd.setHoTen(rs.getString("ho_ten"));
-	            nd.setEmail(rs.getString("email"));
-	            nd.setSoDienThoai(rs.getString("so_dien_thoai"));
-	            nd.setDiaChi(rs.getString("dia_chi"));
-	            nd.setVaiTro(rs.getString("vai_tro"));
-	            nd.setTrangThai(rs.getString("trang_thai"));
-
-	        }
-
+	        boolean kq = ps.executeUpdate() > 0;
 	        conn.close();
-
+	        return kq;
+	        
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-
-	    return nd;
+	    return false;
 	}
+	
+	@Override
+	public NguoiDung timTheoId(int id) {
+	    try (Connection conn = DBConnection.getConnection()) {
+	        String sql = "SELECT * FROM nguoidung WHERE id=?";
+	        PreparedStatement ps = conn.prepareStatement(sql);
+	        ps.setInt(1, id);
+	        ResultSet rs = ps.executeQuery();
 
+	        if (rs.next()) {
+	            NguoiDung nd = new NguoiDung();
+	            nd.setId(rs.getInt("id"));
+	            nd.setTenDangNhap(rs.getString("ten_dang_nhap"));
+	            nd.setMatKhau(rs.getString("mat_khau"));
+	            nd.setTrangThai(rs.getString("trang_thai"));
+	            return nd;
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
 }

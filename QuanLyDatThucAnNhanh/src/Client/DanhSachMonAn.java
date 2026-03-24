@@ -31,7 +31,7 @@ public class DanhSachMonAn extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private static final URI uri =
-            UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh").build();
+            UriBuilder.fromUri("http://localhost:8080/MonAnService").build();
 
     ClientConfig config = new ClientConfig();
     Client client = ClientBuilder.newClient(config);
@@ -43,15 +43,17 @@ public class DanhSachMonAn extends HttpServlet {
 
         Response res = target
                 .path("rest")
-                .path("quanly")
+                .path("monan")
                 .path("LayDanhSachMonCon")
                 .request(MediaType.APPLICATION_JSON)
                 .get();
-
+        
         List<MonAn> ds = null;
         if (res.getStatus() == 200) {
             ds = res.readEntity(new GenericType<List<MonAn>>() {});
         }
+        
+        res.close();
 
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
@@ -80,6 +82,7 @@ public class DanhSachMonAn extends HttpServlet {
         out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css' rel='stylesheet'>");
 
         out.println("<style>");
+        out.println(".disabled-plus { opacity: 0.4 !important; pointer-events: none; cursor: not-allowed; filter: grayscale(100%); }");
         out.println("body{background:linear-gradient(135deg,#fff8f5,#fff);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;}");
         out.println(".navbar-custom{background:#fff;box-shadow:0 2px 12px rgba(0,0,0,0.06);}");
         out.println(".brand-text{color:#ff6b2c;font-size:1.4rem;font-weight:700;text-decoration:none;}");
@@ -187,13 +190,20 @@ public class DanhSachMonAn extends HttpServlet {
                     out.println("<div class='qty-control'>");
                     out.println("<a href='GiamGioHang?id=" + m.getId() + "&from=menu' class='qty-btn btn-minus'>-</a>");
                     out.println("<div class='qty-number'>" + soLuongDaThem + "</div>");
-                    out.println("<a href='ThemGioHang?id=" + m.getId() + "&from=menu' class='qty-btn btn-plus'>+</a>");
+                    if (soLuongDaThem < m.getSoLuong()) {
+                    	out.println("<a href='ThemGioHang?id=" + m.getId() + "&from=menu' class='qty-btn btn-plus'>+</a>");
+                    } else {
+                        out.println("<span class='qty-btn btn-plus disabled-plus'>+</span>");
+                    }
                     out.println("</div>");
                 } else {
                     out.println("<a href='ThemGioHang?id=" + m.getId() + "' class='add-first-btn'>");
                     out.println("<i class='bi bi-cart-plus-fill me-1'></i>Thêm vào giỏ");
                     out.println("</a>");
                 }
+                
+                
+               
 
                 out.println("</div>");
                 out.println("</div>");

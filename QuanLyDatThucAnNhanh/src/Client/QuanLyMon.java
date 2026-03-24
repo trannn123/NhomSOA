@@ -28,7 +28,7 @@ public class QuanLyMon extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private static final URI uri =
-            UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh").build();
+            UriBuilder.fromUri("http://localhost:8080/MonAnService").build();
 
     ClientConfig config = new ClientConfig();
     Client client = ClientBuilder.newClient(config);
@@ -63,6 +63,7 @@ public class QuanLyMon extends HttpServlet {
         out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css' rel='stylesheet'>");
 
         out.println("<style>");
+        out.println(".no-wrap { white-space: nowrap; }");
         out.println("body{background:#f8f9fa;font-family:system-ui;}");
         out.println(".navbar-custom{background:#ffffff;box-shadow:0 2px 10px rgba(0,0,0,0.06);}");
         out.println(".navbar-brand{color:#ff6b2c !important;font-weight:700;font-size:1.3rem;}");
@@ -111,7 +112,7 @@ public class QuanLyMon extends HttpServlet {
         try {
             List<MonAn> list = target
                     .path("rest")
-                    .path("quanly")
+                    .path("monan")
                     .path("LayDanhSachMonAn")
                     .request(MediaType.APPLICATION_JSON)
                     .get(new GenericType<List<MonAn>>() {});
@@ -143,9 +144,9 @@ public class QuanLyMon extends HttpServlet {
                 out.println("<td class='text-end text-primary fw-bold'>" + m.getGia() + "</td>");
 
                 if ("con".equalsIgnoreCase(m.getTrangThai())) {
-                    out.println("<td class='text-center'><span class='badge-con'>Còn hàng</span></td>");
+                	out.println("<td class='text-center no-wrap'><span class='badge-con'>Còn hàng</span></td>");
                 } else {
-                    out.println("<td class='text-center'><span class='badge-het'>Hết hàng</span></td>");
+                	out.println("<td class='text-center no-wrap'><span class='badge-het'>Hết hàng</span></td>");
                 }
 
                 out.println("<td class='text-center action-group'>");

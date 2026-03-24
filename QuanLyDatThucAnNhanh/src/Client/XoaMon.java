@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.client.ClientConfig;
@@ -26,7 +27,7 @@ public class XoaMon extends HttpServlet {
      * @see HttpServlet#HttpServlet()
      */
 	private static final URI uri =
-			UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh").build();
+			UriBuilder.fromUri("http://localhost:8080/MonAnService").build();
 
 	ClientConfig config = new ClientConfig();
 	Client client = ClientBuilder.newClient(config);
@@ -42,12 +43,21 @@ public class XoaMon extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String id = request.getParameter("id");
 		System.out.println("Lay id cua mon de xoa " + id);
-		target.path("rest")
-			  .path("quanly")
-			  .path("XoaMon")
-			  .path(id)
-			  .request()
-			  .post(null);
+		Response res = target
+		        .path("rest")
+		        .path("monan")
+		        .path("XoaMon")
+		        .path(id)
+		        .request()
+		        .delete();
+
+		if (res.getStatus() != 200) {
+		    res.close();
+		    response.sendRedirect("Loi");
+		    return;
+		}
+
+		res.close();
 
 		response.sendRedirect("QuanLyMon");
 	}

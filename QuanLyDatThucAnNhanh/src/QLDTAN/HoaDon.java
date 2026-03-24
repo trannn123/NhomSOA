@@ -4,7 +4,7 @@ public class HoaDon {
 
     private int id;
     private int nguoiDungId;
-    private String ngayDat;
+    private MyDate ngayDat;
     private String trangThai;
     private double tongTien;
     private int tongSoLuong;
@@ -13,7 +13,7 @@ public class HoaDon {
     public HoaDon() {}
 
     // Constructor đầy đủ tham số
-    public HoaDon(int id, int nguoiDungId, String ngayDat, String trangThai, double tongTien, int tongSoLuong) {
+    public HoaDon(int id, int nguoiDungId, MyDate ngayDat, String trangThai, double tongTien, int tongSoLuong) {
         this.id = id;
         this.nguoiDungId = nguoiDungId;
         this.ngayDat = ngayDat;
@@ -38,11 +38,11 @@ public class HoaDon {
         this.nguoiDungId = nguoiDungId;
     }
 
-    public String getNgayDat() {
+    public MyDate getNgayDat() {
         return ngayDat;
     }
 
-    public void setNgayDat(String ngayDat) {
+    public void setNgayDat(MyDate ngayDat) {
         this.ngayDat = ngayDat;
     }
 

@@ -31,12 +31,14 @@ public class DangNhap extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-	private static final URI uri =
-            UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh").build();
-
+	private static final URI uri_CHUNGTHUC =
+            UriBuilder.fromUri("http://localhost:8080/ChungThucService").build();
+	private static final URI uri_NGUOIDUNG =
+            UriBuilder.fromUri("http://localhost:8080/NguoiDungService").build();
     ClientConfig config = new ClientConfig();
     Client client = ClientBuilder.newClient(config);
-    WebTarget target = client.target(uri);
+    WebTarget target_ChungThuc = client.target(uri_CHUNGTHUC);
+    WebTarget target_NguoiDung = client.target(uri_NGUOIDUNG);
     public DangNhap() {
         super();
         // TODO Auto-generated constructor stub
@@ -50,37 +52,6 @@ public class DangNhap extends HttpServlet {
     	request.setCharacterEncoding("UTF-8");
     	response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        String tenDangNhap = request.getParameter("tenDangNhap");
-        String matKhau = request.getParameter("matKhau");
-        // Nếu người dùng đã nhập tài khoản
-        String error = null;
-        if (tenDangNhap != null && matKhau != null) {
-
-            try {
-
-            	NguoiDung nd = target
-                        .path("rest")
-                        .path("quanly")
-                        .path("dangnhap")
-                        .path(tenDangNhap)
-                        .path(matKhau)
-                        .request(MediaType.APPLICATION_JSON)
-                        .post(null, NguoiDung.class);
-
-                if (nd != null) {
-                    HttpSession session = request.getSession();
-                    session.setAttribute("user", nd);
-                    response.sendRedirect("TrangChu");
-                    return;
-                }
-
-            } catch (Exception e) {
-
-            	error = "Sai tài khoản hoặc mật khẩu!";
-
-            }
-
-        }
 
         // Hiển thị form đăng nhập
      // Hiển thị form đăng nhập
@@ -140,14 +111,14 @@ public class DangNhap extends HttpServlet {
         out.println("<div class='card login-card p-5'>");
 
         out.println("<h3 class='text-center title mb-4'>Đăng nhập</h3>");
-        
+        String error = (String) request.getAttribute("error");
         if(error != null){
             out.println("<div class='alert alert-danger text-center'>");
             out.println(error);
             out.println("</div>");
         }
         
-        out.println("<form method='get'>");
+        out.println("<form method='post'>");
 
         out.println("<div class='mb-3'>");
         out.println("<label class='form-label'>Tên đăng nhập</label>");
@@ -175,6 +146,56 @@ public class DangNhap extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String tenDangNhap = request.getParameter("tenDangNhap");
+        String matKhau = request.getParameter("matKhau");
+        
+        String error = null;
+        if (tenDangNhap != null && matKhau != null) {
+
+            try {
+            	NguoiDung nd = new NguoiDung();
+            	nd.setTenDangNhap(tenDangNhap);
+            	nd.setMatKhau(matKhau);
+
+            	NguoiDung result = target_ChungThuc
+                        .path("rest")
+                        .path("chungthuc")
+                        .path("DangNhap")
+                        .request(MediaType.APPLICATION_JSON)
+                        .post(Entity.entity(nd, MediaType.APPLICATION_JSON), NguoiDung.class);
+            	
+            	NguoiDung fullUser = target_NguoiDung
+            	        .path("rest")
+            	        .path("nguoidung")
+            	        .path(tenDangNhap)
+            	        .request(MediaType.APPLICATION_JSON)
+            	        .get(NguoiDung.class);
+                if (result != null) {
+                    HttpSession session = request.getSession();
+                    session.setAttribute("user", fullUser);
+                    response.sendRedirect("TrangChu");
+                    return;
+                }
+                else {
+                    error = "Sai tài khoản hoặc mật khẩu!";
+                }
+
+            }
+            catch (Exception e) {
+
+            	error = "Sai tài khoản hoặc mật khẩu!";
+
+            }
+            request.setAttribute("error", error);
+            doGet(request, response);
+
+        }
+        else {
+            error = "Vui lòng nhập đầy đủ thông tin!";
+            request.setAttribute("error", error);
+            doGet(request, response);
+            return;
+        }
 	}
 
 }

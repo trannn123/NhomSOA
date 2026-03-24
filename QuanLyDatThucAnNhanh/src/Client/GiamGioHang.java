@@ -19,12 +19,12 @@ public class GiamGioHang extends HttpServlet {
             throws ServletException, IOException {
 
         String idStr = request.getParameter("id");
-
+        String from = request.getParameter("from");
         if (idStr == null || idStr.trim().isEmpty()) {
             response.sendRedirect("XemGioHang");
             return;
         }
-
+        
         int id;
         try {
             id = Integer.parseInt(idStr);
@@ -54,8 +54,11 @@ public class GiamGioHang extends HttpServlet {
 
             session.setAttribute("cart", cart);
         }
-
-        response.sendRedirect("XemGioHang");
+        if ("cart".equals(from)) {
+            response.sendRedirect("XemGioHang");
+        } else {
+            response.sendRedirect("DanhSachMonAn");
+        }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

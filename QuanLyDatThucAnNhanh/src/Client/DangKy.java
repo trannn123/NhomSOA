@@ -31,7 +31,7 @@ public class DangKy extends HttpServlet {
 
     // Địa chỉ WebService
     private static final URI uri =
-            UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh/").build();
+            UriBuilder.fromUri("http://localhost:8080/NguoiDungService").build();
 
     ClientConfig config = new ClientConfig();
     Client client = ClientBuilder.newClient(config);
@@ -41,9 +41,6 @@ public class DangKy extends HttpServlet {
         super();
     }
 
-    // ===============================
-    // HIỂN THỊ FORM ĐĂNG KÝ
-    // ===============================
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         response.setContentType("text/html;charset=UTF-8");
@@ -124,9 +121,6 @@ public class DangKy extends HttpServlet {
         out.println("</html>");
     }
 
-    // ===============================
-    // XỬ LÝ ĐĂNG KÝ
-    // ===============================
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	request.setCharacterEncoding("UTF-8");
         // Lấy dữ liệu từ form
@@ -145,14 +139,11 @@ public class DangKy extends HttpServlet {
     	nd.setEmail(email);
     	nd.setSoDienThoai(soDienThoai);
     	nd.setDiaChi(diaChi);
-        // Gửi request đến WebService qua QuanLyWS
         Response ketQua = target
                 .path("rest")
-                .path("quanly")
-                .path("dangky")
+                .path("nguoidung")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(nd, MediaType.APPLICATION_JSON));
-
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 

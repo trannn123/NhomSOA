@@ -12,8 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.client.ClientConfig;
@@ -32,7 +34,7 @@ public class SuaMon extends HttpServlet {
      * @see HttpServlet#HttpServlet()
      */
 	private static final URI uri =
-			UriBuilder.fromUri("http://localhost:8080/QuanLyDatThucAnNhanh").build();
+			UriBuilder.fromUri("http://localhost:8080/MonAnService").build();
 
 	ClientConfig config = new ClientConfig();
 	Client client = ClientBuilder.newClient(config);
@@ -59,38 +61,20 @@ public class SuaMon extends HttpServlet {
 		NguoiDung nd = (NguoiDung) session.getAttribute("user");
 
 		String id = request.getParameter("id");
-		String ten = request.getParameter("ten");
-		String gia = request.getParameter("gia");
-		String soluong = request.getParameter("soluong");
-		String mota = request.getParameter("mota");
-		String trangthai = request.getParameter("trangthai");
-
-		
-		if (ten != null) {
-
-			target.path("rest")
-		      .path("quanly")
-		      .path("SuaMon")
-		      .path(id)
-		      .path(ten)
-		      .path(gia)
-		      .path(soluong)
-		      .path(mota)
-		      .path(trangthai)
-		      .request()
-		      .post(null);
-
-			response.sendRedirect("QuanLyMon");
-			return;
-		}
-		
+		if (id == null) {
+            response.sendRedirect("QuanLyMon");
+            return;
+        }
 		MonAn mon = target.path("rest")
-		        .path("quanly")
+		        .path("monan")
 		        .path("TimMon")
 		        .path(id)
 		        .request(MediaType.APPLICATION_JSON)
 		        .get(MonAn.class);
-
+		if (mon == null) {
+		    response.sendRedirect("QuanLyMon");
+		    return;
+		}
 		out.println("<html>");
 		out.println("<head>");
 		out.println("<meta charset='UTF-8'>");
@@ -158,7 +142,7 @@ public class SuaMon extends HttpServlet {
 
 		out.println("<h2 class='title mb-4'><i class='bi bi-pencil'></i> Sửa món</h2>");
 
-		out.println("<form>");
+		out.println("<form method='post'>");
 
 		out.println("<input type='hidden' name='id' value='" + mon.getId() + "'>");
 
@@ -188,11 +172,11 @@ public class SuaMon extends HttpServlet {
 		out.println("<select class='form-control' name='trangthai'>");
 
 		out.println("<option value='con' "
-		        + (mon.getTrangThai().equals("con") ? "selected" : "") 
+		        + ("con".equals(mon.getTrangThai()) ? "selected" : "") 
 		        + ">Còn hàng</option>");
 
 		out.println("<option value='het' "
-		        + (mon.getTrangThai().equals("het") ? "selected" : "") 
+		        + ("het".equals(mon.getTrangThai()) ? "selected" : "") 
 		        + ">Hết hàng</option>");
 
 		out.println("</select>");
@@ -224,8 +208,42 @@ public class SuaMon extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		request.setCharacterEncoding("UTF-8");
+
+        String id = request.getParameter("id");
+        String ten = request.getParameter("ten");
+        String gia = request.getParameter("gia");
+        String soluong = request.getParameter("soluong");
+        String mota = request.getParameter("mota");
+        String trangthai = request.getParameter("trangthai");
+
+        if (id == null || ten == null || gia == null || soluong == null) {
+            response.sendRedirect("QuanLyMon");
+            return;
+        }
+
+        MonAn mon = new MonAn();
+        mon.setId(Integer.parseInt(id));
+        mon.setTenMon(ten);
+        mon.setGia(Double.parseDouble(gia));
+        mon.setSoLuong(Integer.parseInt(soluong));
+        mon.setMoTa(mota);
+        mon.setTrangThai(trangthai);
+
+        Response res = target.path("rest")
+                .path("monan")
+                .path("SuaMon")
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(mon, MediaType.APPLICATION_JSON));
+
+        if (res.getStatus() != 200) {
+            res.close();
+            response.sendRedirect("Loi");
+            return;
+        }
+
+        res.close();
+        response.sendRedirect("QuanLyMon");
 	}
 
 }
