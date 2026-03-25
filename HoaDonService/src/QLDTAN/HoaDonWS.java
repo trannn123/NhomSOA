@@ -42,7 +42,7 @@ public class HoaDonWS {
     @GET
     @Path("/LayDanhSachHoaDon")
     public Response layDanhSachHoaDon() {
-
+System.out.println("Lay danh sach hoa don");
         List<HoaDon> ds = service.layDanhSachHoaDon();
 
         return ds != null
@@ -72,5 +72,25 @@ public class HoaDonWS {
                 : Response.status(Response.Status.BAD_REQUEST)
                         .entity("Không lấy được hóa đơn theo người dùng")
                         .build();
+    }
+    
+    @PUT
+    @Path("/CapNhatSoLuong")
+    @Consumes(MediaType.TEXT_PLAIN) 
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response capNhatSoLuong(
+            @QueryParam("chiTietHoaDonId") int idChiTietHoaDon,
+            @QueryParam("monAnId") int monAnId,
+            @QueryParam("soLuong") int soLuong) {
+
+        boolean result = service.capNhatSoLuongMonAnTrongChiTietHoaDon(idChiTietHoaDon, monAnId, soLuong);
+
+        if (result) {
+            return Response.ok("Cập nhật thành công").build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Cập nhật thất bại hoặc vượt quá tồn kho")
+                    .build();
+        }
     }
 }

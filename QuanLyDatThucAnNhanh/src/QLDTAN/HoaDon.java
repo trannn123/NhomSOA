@@ -1,26 +1,24 @@
 package QLDTAN;
 
+import java.util.List;
+
 public class HoaDon {
 
     private int id;
+    private String trangThai;
     private int nguoiDungId;
     private MyDate ngayDat;
-    private String trangThai;
-    private double tongTien;
-    private int tongSoLuong;
-
-    // Constructor rỗng
+    private List<ChiTietHoaDon> danhSachChiTietHoaDon;
+    
     public HoaDon() {}
 
-    // Constructor đầy đủ tham số
-    public HoaDon(int id, int nguoiDungId, MyDate ngayDat, String trangThai, double tongTien, int tongSoLuong) {
-        this.id = id;
-        this.nguoiDungId = nguoiDungId;
-        this.ngayDat = ngayDat;
-        this.trangThai = trangThai;
-        this.tongTien = tongTien;
-        this.tongSoLuong = tongSoLuong;
-    }
+    public HoaDon(int id, int nguoiDungId, MyDate ngayDat, String trangThai, List<ChiTietHoaDon> danhSachChiTietHoaDon) {
+	  this.id = id;
+	  this.nguoiDungId = nguoiDungId;
+	  this.ngayDat = ngayDat;
+	  this.trangThai = trangThai;
+	  this.danhSachChiTietHoaDon = danhSachChiTietHoaDon;
+	}
 
     public int getId() {
         return id;
@@ -53,20 +51,13 @@ public class HoaDon {
     public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
     }
-
-    public double getTongTien() {
-        return tongTien;
+    
+    public List<ChiTietHoaDon> getDanhSachChiTietHoaDon() {
+        return danhSachChiTietHoaDon;
     }
 
-    public void setTongTien(double tongTien) {
-        this.tongTien = tongTien;
+    public void setDanhSachChiTietHoaDon(List<ChiTietHoaDon> danhSachChiTietHoaDon) {
+        this.danhSachChiTietHoaDon = danhSachChiTietHoaDon;
     }
-
-    public int getTongSoLuong() {
-        return tongSoLuong;
-    }
-
-    public void setTongSoLuong(int tongSoLuong) {
-        this.tongSoLuong = tongSoLuong;
-    }
+    
 }

@@ -22,8 +22,8 @@ import org.glassfish.jersey.client.ClientConfig;
 import QLDTAN.MonAn;
 import QLDTAN.NguoiDung;
 
-@WebServlet("/ChiTietHoaDon")
-public class ChiTietHoaDon extends HttpServlet {
+@WebServlet("/ChiTietHoaDonQuanLy")
+public class ChiTietHoaDonQuanLy extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private static final URI URI_HOADON =
@@ -35,7 +35,7 @@ public class ChiTietHoaDon extends HttpServlet {
     WebTarget target_HoaDon = client.target(URI_HOADON);
     WebTarget target_MonAn = client.target(URI_MONAN);
 
-    public ChiTietHoaDon() {
+    public ChiTietHoaDonQuanLy() {
         super();
     }
 
@@ -171,7 +171,7 @@ public class ChiTietHoaDon extends HttpServlet {
         }
 
         out.println("<div class='text-center mt-3'>");
-        out.println("<a href='HoaDonDaDat' class='btn btn-orange'><i class='bi bi-arrow-left'></i> Quay lại danh sách hóa đơn</a>");
+        out.println("<a href='QuanLyHoaDon' class='btn btn-orange'><i class='bi bi-arrow-left'></i> Quay lại danh sách hóa đơn</a>");
         out.println("</div>");
 
         out.println("</div>");

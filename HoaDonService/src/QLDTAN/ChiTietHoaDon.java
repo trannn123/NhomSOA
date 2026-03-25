@@ -6,7 +6,7 @@ public class ChiTietHoaDon {
     private int hoaDonId;
     private int monAnId;
     private int soLuong;
-    private double gia;
+    private double donGiaTaiThoiDiemTaoHoaDon;
 
     public ChiTietHoaDon() {
     }
@@ -16,7 +16,7 @@ public class ChiTietHoaDon {
         this.hoaDonId = hoaDonId;
         this.monAnId = monAnId;
         this.soLuong = soLuong;
-        this.gia = gia;
+        this.setDonGiaTaiThoiDiemTaoHoaDon(gia);
     }
 
     public int getId() {
@@ -51,11 +51,11 @@ public class ChiTietHoaDon {
         this.soLuong = soLuong;
     }
 
-    public double getGia() {
-        return gia;
-    }
+	public double getDonGiaTaiThoiDiemTaoHoaDon() {
+		return donGiaTaiThoiDiemTaoHoaDon;
+	}
 
-    public void setGia(double gia) {
-        this.gia = gia;
-    }
+	public void setDonGiaTaiThoiDiemTaoHoaDon(double donGiaTaiThoiDiemTaoHoaDon) {
+		this.donGiaTaiThoiDiemTaoHoaDon = donGiaTaiThoiDiemTaoHoaDon;
+	}
 }

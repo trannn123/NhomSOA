@@ -78,8 +78,6 @@ public class DatMon extends HttpServlet {
 		HoaDon hd = new HoaDon();
 
 		hd.setNguoiDungId(nd.getId());
-		hd.setTongTien(tongTien);
-		hd.setTongSoLuong(tongSoLuong);
 		hd.setTrangThai("dang_xu_ly");
 
 		int hoaDonId = target.path("rest").path("hoadon").path("TaoHoaDon").request(MediaType.APPLICATION_JSON)
@@ -96,7 +94,7 @@ public class DatMon extends HttpServlet {
 			ct.setHoaDonId(hoaDonId);
 			ct.setMonAnId(g.getMon().getId());
 			ct.setSoLuong(g.getSoLuong());
-			ct.setGia(g.getMon().getGia());
+			ct.setDonGiaTaiThoiDiemTaoHoaDon(g.getMon().getGia());
 
 			Response res = target.path("rest").path("hoadon").path("ThemChiTietHoaDon")
 					.request(MediaType.APPLICATION_JSON).post(Entity.entity(ct, MediaType.APPLICATION_JSON));

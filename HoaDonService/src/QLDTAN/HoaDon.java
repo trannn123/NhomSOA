@@ -6,23 +6,17 @@ public class HoaDon {
 
     private int id;
     private String trangThai;
-    private double tongTien;
-    private int tongSoLuong;
     private int nguoiDungId;
     private MyDate ngayDat;
     private List<ChiTietHoaDon> danhSachChiTietHoaDon;
     
     public HoaDon() {}
 
-    public HoaDon(int id, int nguoiDungId, MyDate ngayDat, String trangThai,
-            double tongTien, int tongSoLuong,
-            List<ChiTietHoaDon> danhSachChiTietHoaDon) {
+    public HoaDon(int id, int nguoiDungId, MyDate ngayDat, String trangThai, List<ChiTietHoaDon> danhSachChiTietHoaDon) {
 	  this.id = id;
 	  this.nguoiDungId = nguoiDungId;
 	  this.ngayDat = ngayDat;
 	  this.trangThai = trangThai;
-	  this.tongTien = tongTien;
-	  this.tongSoLuong = tongSoLuong;
 	  this.danhSachChiTietHoaDon = danhSachChiTietHoaDon;
 	}
 
@@ -56,22 +50,6 @@ public class HoaDon {
 
     public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
-    }
-
-    public double getTongTien() {
-        return tongTien;
-    }
-
-    public void setTongTien(double tongTien) {
-        this.tongTien = tongTien;
-    }
-
-    public int getTongSoLuong() {
-        return tongSoLuong;
-    }
-
-    public void setTongSoLuong(int tongSoLuong) {
-        this.tongSoLuong = tongSoLuong;
     }
     
     public List<ChiTietHoaDon> getDanhSachChiTietHoaDon() {

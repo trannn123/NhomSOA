@@ -22,6 +22,7 @@ import org.glassfish.jersey.client.ClientConfig;
 
 import QLDTAN.HoaDon;
 import QLDTAN.NguoiDung;
+import QLDTAN.Util;
 
 @WebServlet("/HoaDonDaDat")
 public class HoaDonDaDat extends HttpServlet {
@@ -126,13 +127,14 @@ public class HoaDonDaDat extends HttpServlet {
             out.println("</tr>");
             out.println("</thead>");
             out.println("<tbody>");
+            System.out.println("Hoa don do dai" +  dsHoaDon.size());
 
             for (HoaDon hd : dsHoaDon) {
                 out.println("<tr>");
                 out.println("<td><b>#" + hd.getId() + "</b></td>");
                 out.println("<td>" + hd.getNgayDat() + "</td>");
-                out.println("<td>" + hd.getTongSoLuong() + "</td>");
-                out.println("<td class='text-danger fw-bold'>" + hd.getTongTien() + "</td>");
+                out.println("<td>" + Util.getTongSoLuongCuaHoaDon(hd) + "</td>");
+                out.println("<td class='text-danger fw-bold'>" + Util.getTongTienCuaHoaDon(hd) + "</td>");
 
                 String trangThai = hd.getTrangThai();
                 String trangThaiHienThi = trangThai;

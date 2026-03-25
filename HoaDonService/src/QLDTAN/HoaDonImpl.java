@@ -47,12 +47,10 @@ public class HoaDonImpl implements IHoaDon {
 	            System.out.println("Người dùng không tồn tại, không tạo hóa đơn");
 	            return -1;
 	        }
-	        String sql = "INSERT INTO hoadon(nguoi_dung_id, trang_thai, tong_tien, tong_so_luong) VALUES(?,?,?,?)";
+	        String sql = "INSERT INTO hoadon(nguoi_dung_id, trang_thai) VALUES(?,?)";
 	        PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 	        ps.setInt(1, hd.getNguoiDungId());
 	        ps.setString(2, hd.getTrangThai());
-	        ps.setDouble(3, hd.getTongTien());
-	        ps.setInt(4, hd.getTongSoLuong());
 	        ps.executeUpdate();
 	        ResultSet rs = ps.getGeneratedKeys();
 	        if (rs.next()) {
@@ -110,7 +108,7 @@ public class HoaDonImpl implements IHoaDon {
 	        	return false;
 	        }
 	        
-	        String sql = "INSERT INTO chitiethoadon(hoa_don_id, mon_an_id, so_luong, gia) VALUES(?,?,?,?)";
+	        String sql = "INSERT INTO chitiethoadon(hoa_don_id, mon_an_id, so_luong, don_gia_tai_thoi_diem_tao_hoa_don) VALUES(?,?,?,?)";
 	        PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setInt(1, ct.getHoaDonId());
 	        ps.setInt(2, ct.getMonAnId());
@@ -141,6 +139,8 @@ public class HoaDonImpl implements IHoaDon {
 
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(ts);
+                
+                hd.setDanhSachChiTietHoaDon(layChiTietHoaDon(rs.getInt("id")));
 
                 MyDate md = new MyDate(
                     cal.get(Calendar.DAY_OF_MONTH),
@@ -151,8 +151,6 @@ public class HoaDonImpl implements IHoaDon {
                 hd.setNgayDat(md);
                 System.out.println("Ngay dat: " + hd.getNgayDat());
                 hd.setTrangThai(rs.getString("trang_thai"));
-                hd.setTongTien(rs.getDouble("tong_tien"));
-                hd.setTongSoLuong(rs.getInt("tong_so_luong"));
                 ds.add(hd);
             }
 
@@ -178,11 +176,12 @@ public class HoaDonImpl implements IHoaDon {
                 ct.setHoaDonId(rs.getInt("hoa_don_id"));
                 ct.setMonAnId(rs.getInt("mon_an_id"));
                 ct.setSoLuong(rs.getInt("so_luong"));
-                ct.setGia(rs.getDouble("gia"));
+                ct.setDonGiaTaiThoiDiemTaoHoaDon(rs.getDouble("don_gia_tai_thoi_diem_tao_hoa_don"));
                 ds.add(ct);
             }
 
         } catch (Exception e) {
+        	System.out.println("Co loi luc lay chi tiet hoa don: " + e);
             e.printStackTrace();
         }
 
@@ -222,6 +221,8 @@ public class HoaDonImpl implements IHoaDon {
 
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(ts);
+                
+                hd.setDanhSachChiTietHoaDon(layChiTietHoaDon(rs.getInt("id")));
 
                 MyDate md = new MyDate(
                     cal.get(Calendar.DAY_OF_MONTH),
@@ -232,8 +233,6 @@ public class HoaDonImpl implements IHoaDon {
                 hd.setNgayDat(md);
                 System.out.println("Ngay dat: " + hd.getNgayDat());
                 hd.setTrangThai(rs.getString("trang_thai"));
-                hd.setTongTien(rs.getDouble("tong_tien"));
-                hd.setTongSoLuong(rs.getInt("tong_so_luong"));
                 ds.add(hd);
             }
             rs.close();
@@ -244,4 +243,57 @@ public class HoaDonImpl implements IHoaDon {
         }
         return ds;
     }
+
+	@Override
+	public boolean capNhatSoLuongMonAnTrongChiTietHoaDon(int idChiTietHoaDon, int idMonAn, int soLuongMoi) {
+
+	    Connection conn = null;
+	    PreparedStatement psCheck = null;
+	    PreparedStatement psUpdate = null;
+
+	    try {
+	        conn = DBConnection.getConnection();
+
+	        // 1. Lấy số lượng tồn kho
+	        String sqlCheck = "SELECT so_luong FROM monan WHERE id = ?";
+	        psCheck = conn.prepareStatement(sqlCheck);
+	        psCheck.setInt(1, idMonAn);
+
+	        ResultSet rs = psCheck.executeQuery();
+
+	        if (!rs.next()) {
+	            return false; // không tìm thấy món
+	        }
+
+	        int soLuongTonKho = rs.getInt("so_luong");
+
+	        // 2. Kiểm tra tồn kho
+	        if (soLuongMoi > soLuongTonKho) {
+	            System.out.println(" Vượt quá số lượng tồn kho");
+	            return false;
+	        }
+
+	        // 3. Update số lượng trong chi tiết hóa đơn
+	        String sqlUpdate = "UPDATE chitiethoadon SET so_luong = ? WHERE id = ? AND mon_an_id = ?";
+	        psUpdate = conn.prepareStatement(sqlUpdate);
+	        psUpdate.setInt(1, soLuongMoi);
+	        psUpdate.setInt(2, idChiTietHoaDon);
+	        psUpdate.setInt(3, idMonAn);
+
+	        int rows = psUpdate.executeUpdate();
+
+	        return rows > 0;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (psCheck != null) psCheck.close();
+	            if (psUpdate != null) psUpdate.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+
+	    return false;
+	}
 }
