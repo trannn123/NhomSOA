@@ -93,4 +93,23 @@ System.out.println("Lay danh sach hoa don");
                     .build();
         }
     }
+    
+    @PUT
+    @Path("/CapNhatTrangThaiHoaDon")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response capNhatTrangThaiHoaDon(
+            @QueryParam("hoaDonId") int hoaDonId,
+            @QueryParam("trangThai") String trangThai) {
+
+        boolean result = service.capNhatTrangThaiHoaDon(hoaDonId, trangThai);
+
+        if (result) {
+            return Response.ok("Cập nhật trạng thái hóa đơn thành công").build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Cập nhật trạng thái thất bại")
+                    .build();
+        }
+    }
 }

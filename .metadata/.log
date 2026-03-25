@@ -3736,3 +3736,20 @@ Java Model Exception: Java Model Status [Unknown javadoc format for Utils [in Ut
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
 !SUBENTRY 1 org.eclipse.jdt.core 4 1009 2026-03-26 01:02:19.731
 !MESSAGE Unknown javadoc format for Utils [in Utils.class [in com.sun.deploy.uitoolkit.impl.fx [in C:\Java\jdk1.8.0_181\jre\lib\ext\jfxrt.jar]]]
+!SESSION 2026-03-26 01:47:58.742 -----------------------------------------------
+eclipse.buildId=4.10.0.I20181206-0815
+java.version=21.0.8
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.jee.product
+
+!ENTRY org.eclipse.jface.text 2 0 2026-03-26 01:48:07.428
+!MESSAGE Duplicate template id: 'org.eclipse.wst.xslt.templates.xpath.boolean'
+
+!ENTRY org.eclipse.egit.ui 2 0 2026-03-26 01:48:09.837
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\PC-ASUS'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.

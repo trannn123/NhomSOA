@@ -9,5 +9,6 @@ public interface IHoaDon {
     List<ChiTietHoaDon> layChiTietHoaDon(int hoaDonId);
     List<HoaDon> layHoaDonTheoNguoiDung(int nguoiDungId);
     boolean capNhatSoLuongMonAnTrongChiTietHoaDon(int idChiTietHoaDon, int idMonAn, int soLuongMoi);
+    boolean capNhatTrangThaiHoaDon(int id, String trangThai);
 
 }

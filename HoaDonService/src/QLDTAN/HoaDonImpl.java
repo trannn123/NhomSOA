@@ -296,4 +296,25 @@ public class HoaDonImpl implements IHoaDon {
 
 	    return false;
 	}
+
+	@Override
+	public boolean capNhatTrangThaiHoaDon(int id, String trangThai) {
+	    try {
+	        Connection conn = DBConnection.getConnection();
+	        String sql = "UPDATE hoadon SET trang_thai = ? WHERE id = ?";
+	        
+	        PreparedStatement ps = conn.prepareStatement(sql);
+	        ps.setString(1, trangThai);
+	        ps.setInt(2, id);
+	        
+	        int rows = ps.executeUpdate();
+	        
+	        conn.close();
+	        
+	        return rows > 0;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return false;
+	}
 }

@@ -64,6 +64,10 @@ public class QuanLyHoaDon extends HttpServlet {
         out.println(".page-title{font-weight:700;color:#333;}");
         out.println(".btn-orange{background:#ff6b2c;color:white;border:none;}");
         out.println(".btn-orange:hover{background:#e85d22;color:white;}");
+        out.println(".status-select { color: black; }");
+        out.println(".status-dang_xu_ly { color: #0d6efd !important; font-weight: 600; }"); // xanh dương
+        out.println(".status-thanh_cong { color: #28a745 !important; font-weight: 600; }"); // xanh lá
+        out.println(".status-huy { color: #6c757d !important; font-weight: 600; }"); // xám
         out.println("</style>");
 
         out.println("</head>");
@@ -110,12 +114,24 @@ public class QuanLyHoaDon extends HttpServlet {
             out.println("<td>" + Util.getTongSoLuongCuaHoaDon(hd) + "</td>");
             out.println("<td class='text-danger fw-bold'>" + Util.getTongTienCuaHoaDon(hd) + "</td>");
 
-            String trangThai = hd.getTrangThai().equals("thanh_cong")
-                    ? "<span class='badge bg-success'>Thành công</span>"
-                    : "<span class='badge bg-warning text-dark'>Đang xử lý</span>";
+            String currentStatus = hd.getTrangThai();
+            out.println("<td>");
 
-            out.println("<td>" + trangThai + "</td>");
+            out.println("<select name='trangThai' class='form-select form-select-sm status-select' " +
+                    "onchange='confirmAndSubmit(this, " + hd.getId() + ")'>");
 
+            out.println("<option value='dang_xu_ly'" +
+                    (currentStatus.equals("dang_xu_ly") ? " selected" : "") + ">Đang xử lý</option>");
+
+            out.println("<option value='thanh_cong'" +
+                    (currentStatus.equals("thanh_cong") ? " selected" : "") + ">Thành công</option>");
+
+            out.println("<option value='huy'" +
+                    (currentStatus.equals("huy") ? " selected" : "") + ">Đã hủy</option>");
+
+            out.println("</select>");
+
+            out.println("</td>");
             out.println("<td>");
             out.println("<a href='ChiTietHoaDonQuanLy?id=" + hd.getId() + "' class='btn btn-primary btn-sm me-1'><i class='bi bi-eye'></i></a>");
             out.println("<a href='SuaHoaDon?id=" + hd.getId() + "' class='btn btn-warning btn-sm me-1'><i class='bi bi-pencil'></i></a>");
@@ -130,8 +146,51 @@ public class QuanLyHoaDon extends HttpServlet {
 
         out.println("</div>");
         out.println("</div>");
+        
+        out.println("<script>");
+
+        out.println("function confirmAndSubmit(select, hoaDonId) {");
+
+        out.println("    let value = select.value;");
+        out.println("    let text = select.options[select.selectedIndex].text;");
+
+        out.println("    if (confirm('Bạn có chắc muốn đổi trạng thái thành: ' + text + '?')) {");
+
+        out.println("        fetch('QuanLyHoaDon', {");
+        out.println("            method: 'POST',");
+        out.println("            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },");
+        out.println("            body: 'hoaDonId=' + hoaDonId + '&trangThai=' + value");
+        out.println("        }).then(() => {");
+        out.println("            location.reload();");
+        out.println("        });");
+
+        out.println("    } else {");
+        out.println("        location.reload();");
+        out.println("    }");
+
+        out.println("}");
+
+        out.println("</script>");
 
         out.println("</body>");
         out.println("</html>");
+    }
+    
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        int hoaDonId = Integer.parseInt(request.getParameter("hoaDonId"));
+        String trangThai = request.getParameter("trangThai");
+
+        target_HoaDon
+                .path("rest")
+                .path("hoadon")
+                .path("CapNhatTrangThaiHoaDon")
+                .queryParam("hoaDonId", hoaDonId)
+                .queryParam("trangThai", trangThai)
+                .request()
+                .put(Entity.text(""));
+
+        response.sendRedirect("QuanLyHoaDon");
     }
 }
