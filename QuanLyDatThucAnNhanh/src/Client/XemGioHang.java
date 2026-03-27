@@ -1,5 +1,4 @@
 package Client;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.NumberFormat;
@@ -13,23 +12,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import QLDTAN.GioHang;
-
+import QLDTAN.ItemGioHang;
+/**
+ * Servlet implementation class XemGioHang
+ */
 @WebServlet("/XemGioHang")
 public class XemGioHang extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
     public XemGioHang() {
         super();
+        // TODO Auto-generated constructor stub
     }
-
     @SuppressWarnings("unchecked")
+    /**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         HttpSession session = request.getSession();
-        List<GioHang> cart = (List<GioHang>) session.getAttribute("cart");
-
+        List<ItemGioHang> cart = (List<ItemGioHang>) session.getAttribute("cart");
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
@@ -39,7 +43,7 @@ public class XemGioHang extends HttpServlet {
         double tongTien = 0;
 
         if (cart != null) {
-            for (GioHang g : cart) {
+            for (ItemGioHang g : cart) {
                 tongSoLuong += g.getSoLuong();
                 tongTien += g.getThanhTien();
             }
@@ -89,7 +93,6 @@ public class XemGioHang extends HttpServlet {
 
         out.println("<div class='container cart-wrapper'>");
         out.println("<div class='page-card'>");
-
         out.println("<div class='page-header d-flex flex-wrap justify-content-between align-items-center'>");
         out.println("<div>");
         out.println("<h2 class='page-title'><i class='bi bi-cart3 me-2'></i>Giỏ hàng của bạn");
@@ -103,11 +106,9 @@ public class XemGioHang extends HttpServlet {
         out.println("<a href='DanhSachMonAn' class='btn btn-light action-btn'><i class='bi bi-arrow-left me-1'></i>Tiếp tục mua</a>");
         out.println("</div>");
         out.println("</div>");
-
         out.println("<div class='p-4'>");
 
         if (cart == null || cart.isEmpty()) {
-
             out.println("<div class='empty-box'>");
             out.println("<div class='empty-icon'><i class='bi bi-bag-x'></i></div>");
             out.println("<h4 class='mt-3 fw-bold'>Giỏ hàng đang trống</h4>");
@@ -118,7 +119,6 @@ public class XemGioHang extends HttpServlet {
             out.println("</div>");
 
         } else {
-
             out.println("<div class='table-responsive mb-4'>");
             out.println("<table class='table align-middle'>");
 
@@ -134,9 +134,8 @@ public class XemGioHang extends HttpServlet {
 
             out.println("<tbody>");
 
-            for (GioHang g : cart) {
+            for (ItemGioHang g : cart) {
                 out.println("<tr>");
-
                 out.println("<td>");
                 out.println("<div class='food-name'>" + g.getMon().getTenMon() + "</div>");
                 out.println("</td>");
@@ -154,7 +153,6 @@ public class XemGioHang extends HttpServlet {
                 }
                 out.println("</div>");
                 out.println("</td>");
-
                 out.println("<td class='price-text'>" + vnd.format(g.getThanhTien()) + "</td>");
 
                 out.println("<td class='text-center'>");
@@ -162,16 +160,13 @@ public class XemGioHang extends HttpServlet {
                 out.println("<i class='bi bi-trash3'></i> Xóa");
                 out.println("</a>");
                 out.println("</td>");
-
                 out.println("</tr>");
             }
-
             out.println("</tbody>");
             out.println("</table>");
             out.println("</div>");
 
             out.println("<div class='row g-3'>");
-
             out.println("<div class='col-md-6'>");
             out.println("<div class='summary-box h-100'>");
             out.println("<div class='summary-title'><i class='bi bi-receipt me-2'></i>Tóm tắt đơn hàng</div>");
@@ -194,10 +189,8 @@ public class XemGioHang extends HttpServlet {
 
             out.println("</div>");
             out.println("</div>");
-
             out.println("</div>");
         }
-
         out.println("</div>");
         out.println("</div>");
         out.println("</div>");
@@ -205,9 +198,12 @@ public class XemGioHang extends HttpServlet {
         out.println("</body>");
         out.println("</html>");
     }
-
+    /**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response);
+    	// TODO Auto-generated method stub
+    	doGet(request, response);
     }
 }

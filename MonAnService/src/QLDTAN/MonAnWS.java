@@ -1,13 +1,12 @@
 package QLDTAN;
-
 import java.util.List;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 @Path("/monan")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+
 public class MonAnWS {
     IMonAn service = new MonAnImpl();
     

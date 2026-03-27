@@ -1,5 +1,4 @@
 package Client;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -8,20 +7,27 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
 import QLDTAN.NguoiDung;
-
+/**
+ * Servlet implementation class QuanLyNguoiDung
+ */
 @WebServlet("/QuanLyNguoiDung")
 public class QuanLyNguoiDung extends HttpServlet {
-
     private static final long serialVersionUID = 1L;
-
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public QuanLyNguoiDung() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+    /**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
-
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("user") == null) {
@@ -30,7 +36,6 @@ public class QuanLyNguoiDung extends HttpServlet {
         }
 
         NguoiDung nd = (NguoiDung) session.getAttribute("user");
-        String hoTen = nd.getHoTen() != null ? nd.getHoTen() : "";
 
         out.println("<!DOCTYPE html>");
         out.println("<html lang='vi'>");
@@ -64,14 +69,12 @@ public class QuanLyNguoiDung extends HttpServlet {
 
         out.println("<nav class='custom-navbar'>");
         out.println("<div class='container d-flex justify-content-between align-items-center'>");
-
         out.println("<a href='TrangChu' class='navbar-brand-custom'>");
         out.println("<i class='bi bi-bag-heart-fill'></i>");
         out.println("<span>Quản Lý Đặt Thức Ăn</span>");
         out.println("</a>");
 
         out.println("<div class='d-flex align-items-center gap-2'>");
-
         out.println("<a href='TrangChu' class='btn btn-outline-danger btn-sm rounded-pill px-3'>");
         out.println("<i class='bi bi-house-door-fill me-1'></i>Trang chủ");
         out.println("</a>");
@@ -126,9 +129,12 @@ public class QuanLyNguoiDung extends HttpServlet {
         out.println("</body>");
         out.println("</html>");
     }
-
+    /**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response);
+    	// TODO Auto-generated method stub
+    	doGet(request, response);
     }
 }

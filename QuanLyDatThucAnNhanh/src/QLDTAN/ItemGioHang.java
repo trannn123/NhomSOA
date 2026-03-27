@@ -1,14 +1,14 @@
 package QLDTAN;
 
-public class GioHang {
+public class ItemGioHang {
 
     private MonAn mon;
     private int soLuong;
 
-    public GioHang() {
+    public ItemGioHang() {
     }
 
-    public GioHang(MonAn mon, int soLuong) {
+    public ItemGioHang(MonAn mon, int soLuong) {
         this.mon = mon;
         this.soLuong = soLuong;
     }

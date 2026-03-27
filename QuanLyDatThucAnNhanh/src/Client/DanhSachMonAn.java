@@ -1,5 +1,4 @@
 package Client;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
@@ -21,23 +20,31 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.client.ClientConfig;
 
-import QLDTAN.GioHang;
+import QLDTAN.ItemGioHang;
 import QLDTAN.MonAn;
 import QLDTAN.NguoiDung;
-
+/**
+ * Servlet implementation class DanhSachMonAn
+ */
 @WebServlet("/DanhSachMonAn")
 public class DanhSachMonAn extends HttpServlet {
-
     private static final long serialVersionUID = 1L;
-
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
     private static final URI uri =
             UriBuilder.fromUri("http://localhost:8080/MonAnService").build();
-
     ClientConfig config = new ClientConfig();
     Client client = ClientBuilder.newClient(config);
     WebTarget target = client.target(uri);
-
+    public DanhSachMonAn() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
     @SuppressWarnings("unchecked")
+    /**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -52,19 +59,17 @@ public class DanhSachMonAn extends HttpServlet {
         if (res.getStatus() == 200) {
             ds = res.readEntity(new GenericType<List<MonAn>>() {});
         }
-        
         res.close();
 
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-
         HttpSession session = request.getSession();
         NguoiDung nd = (NguoiDung) session.getAttribute("user");
-        List<GioHang> cart = (List<GioHang>) session.getAttribute("cart");
+        List<ItemGioHang> cart = (List<ItemGioHang>) session.getAttribute("cart");
 
         int tongSoLuongTrongGio = 0;
         if (cart != null) {
-            for (GioHang g : cart) {
+            for (ItemGioHang g : cart) {
                 tongSoLuongTrongGio += g.getSoLuong();
             }
         }
@@ -77,7 +82,6 @@ public class DanhSachMonAn extends HttpServlet {
         out.println("<meta charset='UTF-8'>");
         out.println("<meta name='viewport' content='width=device-width, initial-scale=1'>");
         out.println("<title>Danh sách món ăn</title>");
-
         out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel='stylesheet'>");
         out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css' rel='stylesheet'>");
 
@@ -98,7 +102,6 @@ public class DanhSachMonAn extends HttpServlet {
         out.println(".empty-box{background:#fff;border-radius:16px;padding:30px;box-shadow:0 6px 18px rgba(0,0,0,0.06);}");
         out.println(".invoice-btn{background:#fff0f0;color:#dc3545;border:1px solid #f5c2c7;border-radius:999px;font-weight:600;padding:6px 14px;}");
         out.println(".invoice-btn:hover{background:#dc3545;color:#fff;border-color:#dc3545;}");
-
         out.println(".qty-control{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px;}");
         out.println(".qty-btn{width:42px;height:42px;border:none;border-radius:12px;font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;text-decoration:none;}");
         out.println(".btn-minus{background:#ffe5e5;color:#dc3545;}");
@@ -115,13 +118,10 @@ public class DanhSachMonAn extends HttpServlet {
 
         out.println("<nav class='navbar navbar-expand-lg navbar-custom mb-4'>");
         out.println("<div class='container py-2'>");
-
         out.println("<a class='brand-text' href='TrangChu'>");
         out.println("<i class='bi bi-bag-heart-fill me-2'></i>Quản Lý Đặt Thức Ăn");
         out.println("</a>");
-
         out.println("<div class='d-flex align-items-center gap-2 flex-wrap'>");
-
         out.println("<a href='TrangChu' class='btn btn-outline-danger btn-sm rounded-pill px-3'>");
         out.println("<i class='bi bi-house-door-fill me-1'></i>Trang chủ");
         out.println("</a>");
@@ -134,14 +134,12 @@ public class DanhSachMonAn extends HttpServlet {
             out.println("<span class='cart-badge'>" + tongSoLuongTrongGio + "</span>");
         }
         out.println("</a>");
-
         if (nd != null) {
             out.println("<span class='welcome-text ms-2'>Xin chào, <b>" + nd.getHoTen() + "</b></span>");
             out.println("<a href='DangXuat' class='btn btn-outline-secondary btn-sm rounded-pill px-3 ms-2'>");
             out.println("<i class='bi bi-box-arrow-right me-1'></i>Đăng xuất");
             out.println("</a>");
         }
-
         out.println("</div>");
         out.println("</div>");
         out.println("</nav>");
@@ -154,12 +152,11 @@ public class DanhSachMonAn extends HttpServlet {
 
         if (ds != null && !ds.isEmpty()) {
             out.println("<div class='row g-4'>");
-
             for (MonAn m : ds) {
                 int soLuongDaThem = 0;
 
                 if (cart != null) {
-                    for (GioHang g : cart) {
+                    for (ItemGioHang g : cart) {
                         if (g.getMon() != null && g.getMon().getId() == m.getId()) {
                             soLuongDaThem = g.getSoLuong();
                             break;
@@ -169,7 +166,6 @@ public class DanhSachMonAn extends HttpServlet {
 
                 out.println("<div class='col-md-6 col-lg-4'>");
                 out.println("<div class='card food-card'>");
-
                 out.println("<div class='food-icon'>");
                 out.println("<i class='bi bi-cup-hot-fill'></i>");
                 out.println("</div>");
@@ -183,7 +179,6 @@ public class DanhSachMonAn extends HttpServlet {
                 out.println("<p class='desc-text'>" + moTa + "</p>");
 
                 out.println("<div class='price-text mb-3'>Giá: " + vnd.format(m.getGia()) + "</div>");
-
                 out.println("<div class='mt-auto text-center'>");
 
                 if (soLuongDaThem > 0) {
@@ -201,16 +196,12 @@ public class DanhSachMonAn extends HttpServlet {
                     out.println("<i class='bi bi-cart-plus-fill me-1'></i>Thêm vào giỏ");
                     out.println("</a>");
                 }
-                
-                
-               
-
+              
                 out.println("</div>");
                 out.println("</div>");
                 out.println("</div>");
                 out.println("</div>");
             }
-
             out.println("</div>");
         } else {
             out.println("<div class='empty-box text-center'>");
@@ -219,14 +210,16 @@ public class DanhSachMonAn extends HttpServlet {
             out.println("<p class='text-muted mb-0'>Vui lòng quay lại sau để xem thêm món mới.</p>");
             out.println("</div>");
         }
-
         out.println("</div>");
         out.println("</body>");
         out.println("</html>");
     }
-
+    /**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response);
+    	// TODO Auto-generated method stub
+    	doGet(request, response);
     }
 }

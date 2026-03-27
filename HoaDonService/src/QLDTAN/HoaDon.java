@@ -1,5 +1,4 @@
 package QLDTAN;
-
 import java.util.List;
 
 public class HoaDon {
@@ -19,7 +18,7 @@ public class HoaDon {
 	  this.trangThai = trangThai;
 	  this.danhSachChiTietHoaDon = danhSachChiTietHoaDon;
 	}
-
+    
     public int getId() {
         return id;
     }

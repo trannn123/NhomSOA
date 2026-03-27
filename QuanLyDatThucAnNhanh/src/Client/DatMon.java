@@ -1,9 +1,7 @@
 package Client;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,35 +15,28 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-
 import org.glassfish.jersey.client.ClientConfig;
-
 import QLDTAN.ChiTietHoaDon;
-import QLDTAN.GioHang;
+import QLDTAN.ItemGioHang;
 import QLDTAN.HoaDon;
 import QLDTAN.NguoiDung;
-
 /**
  * Servlet implementation class DatMon
  */
 @WebServlet("/DatMon")
 public class DatMon extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	private static final URI uri = UriBuilder.fromUri("http://localhost:8080/HoaDonService").build();
-
 	ClientConfig config = new ClientConfig();
 	Client client = ClientBuilder.newClient(config);
 	WebTarget target = client.target(uri);
-
 	public DatMon() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -53,50 +44,54 @@ public class DatMon extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
-
 		NguoiDung nd = (NguoiDung) session.getAttribute("user");
 
 		if (nd == null) {
 			response.sendRedirect("DangNhap");
 			return;
 		}
-		List<GioHang> cart = (List<GioHang>) session.getAttribute("cart");
-
+		
+		List<ItemGioHang> cart = (List<ItemGioHang>) session.getAttribute("cart");
 		if (cart == null || cart.isEmpty()) {
 			response.sendRedirect("DanhSachMonAn");
 			return;
 		}
-
+		
 		double tongTien = 0;
 		int tongSoLuong = 0;
 
-		for (GioHang g : cart) {
+		for (ItemGioHang g : cart) {
 			tongTien += g.getThanhTien();
 			tongSoLuong += g.getSoLuong();
 		}
 
 		HoaDon hd = new HoaDon();
-
 		hd.setNguoiDungId(nd.getId());
 		hd.setTrangThai("dang_xu_ly");
 
-		int hoaDonId = target.path("rest").path("hoadon").path("TaoHoaDon").request(MediaType.APPLICATION_JSON)
+		int hoaDonId = target
+				.path("rest")
+				.path("hoadon")
+				.path("TaoHoaDon")
+				.request(MediaType.APPLICATION_JSON)
 				.post(Entity.entity(hd, MediaType.APPLICATION_JSON), Integer.class);
+		
 		if (hoaDonId <= 0) {
 			response.sendRedirect("DanhSachMonAn");
 			return;
 		}
 
-		for (GioHang g : cart) {
-
+		for (ItemGioHang g : cart) {
 			ChiTietHoaDon ct = new ChiTietHoaDon();
-
 			ct.setHoaDonId(hoaDonId);
 			ct.setMonAnId(g.getMon().getId());
 			ct.setSoLuong(g.getSoLuong());
 			ct.setDonGiaTaiThoiDiemTaoHoaDon(g.getMon().getGia());
 
-			Response res = target.path("rest").path("hoadon").path("ThemChiTietHoaDon")
+			Response res = target
+					.path("rest")
+					.path("hoadon")
+					.path("ThemChiTietHoaDon")
 					.request(MediaType.APPLICATION_JSON).post(Entity.entity(ct, MediaType.APPLICATION_JSON));
 
 			if (res.getStatus() != 200) {
@@ -104,15 +99,11 @@ public class DatMon extends HttpServlet {
 				response.sendRedirect("DanhSachMonAn");
 				return;
 			}
-
 			res.close();
 		}
-
 		session.removeAttribute("cart");
-
 		response.sendRedirect("HoaDonDaDat");
 	}
-
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -122,5 +113,4 @@ public class DatMon extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-
 }

@@ -1,5 +1,4 @@
 package Client;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
@@ -14,23 +13,33 @@ import javax.ws.rs.core.*;
 import QLDTAN.HoaDon;
 import QLDTAN.NguoiDung;
 import QLDTAN.Util;
-
+/**
+ * Servlet implementation class QuanLyHoaDon
+ */
 @WebServlet("/QuanLyHoaDon")
 public class QuanLyHoaDon extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
     private static final URI URI_HOADON =
             UriBuilder.fromUri("http://localhost:8080/HoaDonService").build();
-
     Client client = ClientBuilder.newClient();
     WebTarget target_HoaDon = client.target(URI_HOADON);
-
+    public QuanLyHoaDon() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+    /**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         HttpSession session = request.getSession();
         NguoiDung nd = (NguoiDung) session.getAttribute("user");
-
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        
         if (nd == null) {
             response.sendRedirect("DangNhap");
             return;
@@ -42,17 +51,13 @@ public class QuanLyHoaDon extends HttpServlet {
                 .path("LayDanhSachHoaDon")
                 .request(MediaType.APPLICATION_JSON)
                 .get(new GenericType<List<HoaDon>>() {});
-
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-
+ 
         out.println("<!DOCTYPE html>");
         out.println("<html>");
         out.println("<head>");
         out.println("<meta charset='UTF-8'>");
         out.println("<meta name='viewport' content='width=device-width, initial-scale=1.0'>");
         out.println("<title>Quản lý hóa đơn</title>");
-
         out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel='stylesheet'>");
         out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css' rel='stylesheet'>");
 
@@ -65,9 +70,9 @@ public class QuanLyHoaDon extends HttpServlet {
         out.println(".btn-orange{background:#ff6b2c;color:white;border:none;}");
         out.println(".btn-orange:hover{background:#e85d22;color:white;}");
         out.println(".status-select { color: black; }");
-        out.println(".status-dang_xu_ly { color: #0d6efd !important; font-weight: 600; }"); // xanh dương
-        out.println(".status-thanh_cong { color: #28a745 !important; font-weight: 600; }"); // xanh lá
-        out.println(".status-huy { color: #6c757d !important; font-weight: 600; }"); // xám
+        out.println(".status-dang_xu_ly { color: #0d6efd !important; font-weight: 600; }"); 
+        out.println(".status-thanh_cong { color: #28a745 !important; font-weight: 600; }");
+        out.println(".status-huy { color: #6c757d !important; font-weight: 600; }"); 
         out.println("</style>");
 
         out.println("</head>");
@@ -85,7 +90,6 @@ public class QuanLyHoaDon extends HttpServlet {
 
         out.println("<div class='container'>");
         out.println("<div class='card p-4'>");
-
         out.println("<h3 class='mb-4 text-center page-title'>");
         out.println("<i class='bi bi-receipt'></i> Quản lý hóa đơn");
         out.println("</h3>");
@@ -103,43 +107,61 @@ public class QuanLyHoaDon extends HttpServlet {
         out.println("<th>Thao tác</th>");
         out.println("</tr>");
         out.println("</thead>");
-
         out.println("<tbody>");
 
+        int tongSoLuong;
+        double tongTien;
+        
         for (HoaDon hd : dsHoaDon) {
-            out.println("<tr>");
+        	
+        	String slStr =
+                    target_HoaDon.path("rest")
+                            .path("hoadon")
+                            .path("TongSoLuongHoaDon")
+                            .path(String.valueOf(hd.getId()))
+                            .request()
+                            .get(String.class);
 
+            tongSoLuong = Integer.parseInt(slStr);
+
+            String tienStr =
+                    target_HoaDon.path("rest")
+                            .path("hoadon")
+                            .path("TongTienHoaDon")
+                            .path(String.valueOf(hd.getId()))
+                            .request()
+                            .get(String.class);
+
+            tongTien = Double.parseDouble(tienStr);
+            
+            out.println("<tr>");
             out.println("<td>#" + hd.getId() + "</td>");
             out.println("<td>" + hd.getNgayDat() + "</td>");
-            out.println("<td>" + Util.getTongSoLuongCuaHoaDon(hd) + "</td>");
-            out.println("<td class='text-danger fw-bold'>" + Util.getTongTienCuaHoaDon(hd) + "</td>");
-
+            out.println("<td>" + tongSoLuong + "</td>");
+            out.println("<td class='text-danger fw-bold'>" + tongTien + "</td>");
             String currentStatus = hd.getTrangThai();
             out.println("<td>");
-
             out.println("<select name='trangThai' class='form-select form-select-sm status-select' " +
                     "onchange='confirmAndSubmit(this, " + hd.getId() + ")'>");
 
             out.println("<option value='dang_xu_ly'" +
                     (currentStatus.equals("dang_xu_ly") ? " selected" : "") + ">Đang xử lý</option>");
-
             out.println("<option value='thanh_cong'" +
                     (currentStatus.equals("thanh_cong") ? " selected" : "") + ">Thành công</option>");
-
             out.println("<option value='huy'" +
                     (currentStatus.equals("huy") ? " selected" : "") + ">Đã hủy</option>");
-
             out.println("</select>");
-
             out.println("</td>");
+            
             out.println("<td>");
-            out.println("<a href='ChiTietHoaDonQuanLy?id=" + hd.getId() + "' class='btn btn-primary btn-sm me-1'><i class='bi bi-eye'></i></a>");
+            out.println("<a href='QuanLyChiTietHoaDon?id=" + hd.getId() + "' class='btn btn-primary btn-sm me-1'><i class='bi bi-eye'></i></a>");
             out.println("<a href='SuaHoaDon?id=" + hd.getId() + "' class='btn btn-warning btn-sm me-1'><i class='bi bi-pencil'></i></a>");
+            out.println("<a href='XoaHoaDon?id=" + hd.getId() + "' class='btn btn-danger btn-sm' " +
+                    "onclick='return confirm(\"Bạn có chắc muốn xóa hóa đơn #" + hd.getId() + " không?\")'>" +
+                    "<i class='bi bi-trash'></i></a>");
             out.println("</td>");
-
             out.println("</tr>");
         }
-
         out.println("</tbody>");
         out.println("</table>");
         out.println("</div>");
@@ -148,14 +170,10 @@ public class QuanLyHoaDon extends HttpServlet {
         out.println("</div>");
         
         out.println("<script>");
-
         out.println("function confirmAndSubmit(select, hoaDonId) {");
-
         out.println("    let value = select.value;");
         out.println("    let text = select.options[select.selectedIndex].text;");
-
         out.println("    if (confirm('Bạn có chắc muốn đổi trạng thái thành: ' + text + '?')) {");
-
         out.println("        fetch('QuanLyHoaDon', {");
         out.println("            method: 'POST',");
         out.println("            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },");
@@ -163,22 +181,20 @@ public class QuanLyHoaDon extends HttpServlet {
         out.println("        }).then(() => {");
         out.println("            location.reload();");
         out.println("        });");
-
         out.println("    } else {");
         out.println("        location.reload();");
         out.println("    }");
-
         out.println("}");
-
         out.println("</script>");
 
         out.println("</body>");
         out.println("</html>");
     }
-    
+    /**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         int hoaDonId = Integer.parseInt(request.getParameter("hoaDonId"));
         String trangThai = request.getParameter("trangThai");
 
@@ -190,7 +206,7 @@ public class QuanLyHoaDon extends HttpServlet {
                 .queryParam("trangThai", trangThai)
                 .request()
                 .put(Entity.text(""));
-
+        
         response.sendRedirect("QuanLyHoaDon");
     }
 }

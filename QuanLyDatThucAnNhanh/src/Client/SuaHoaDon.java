@@ -1,5 +1,4 @@
 package Client;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
@@ -15,33 +14,47 @@ import org.glassfish.jersey.client.ClientConfig;
 
 import QLDTAN.MonAn;
 import QLDTAN.NguoiDung;
-
+/**
+ * Servlet implementation class SuaHoaDon
+ */
 @WebServlet("/SuaHoaDon")
 public class SuaHoaDon extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
     private static final URI URI_HOADON =
             UriBuilder.fromUri("http://localhost:8080/HoaDonService").build();
     private static final URI URI_MONAN =
             UriBuilder.fromUri("http://localhost:8080/MonAnService").build();
-
     Client client = ClientBuilder.newClient(new ClientConfig());
     WebTarget target_HoaDon = client.target(URI_HOADON);
     WebTarget target_MonAn = client.target(URI_MONAN);
-
+    public SuaHoaDon() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+    /**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         NguoiDung nd = (NguoiDung) session.getAttribute("user");
 
-        if (nd == null) {
+        if (nd == null || !"nhanvien".equals(nd.getVaiTro())) {
             response.sendRedirect("DangNhap");
             return;
         }
 
-        int hoaDonId = Integer.parseInt(request.getParameter("id"));
-
+        String idStr = request.getParameter("id");
+        if (idStr == null || idStr.trim().isEmpty()) {
+            response.sendRedirect("QuanLyHoaDon");
+            return;
+        }
+        int hoaDonId = Integer.parseInt(idStr);
+        
         List<QLDTAN.ChiTietHoaDon> dsChiTiet = target_HoaDon
                 .path("rest").path("hoadon").path("LayChiTietHoaDon")
                 .path(String.valueOf(hoaDonId))
@@ -54,7 +67,6 @@ public class SuaHoaDon extends HttpServlet {
         out.println("<!DOCTYPE html><html><head>");
         out.println("<meta charset='UTF-8'>");
         out.println("<meta name='viewport' content='width=device-width, initial-scale=1.0'>");
-
         out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel='stylesheet'>");
         out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css' rel='stylesheet'>");
 
@@ -70,7 +82,6 @@ public class SuaHoaDon extends HttpServlet {
 
         out.println("</head><body>");
 
-        // Navbar
         out.println("<nav class='navbar bg-white border-bottom mb-4'>");
         out.println("<div class='container'>");
         out.println("<span class='navbar-brand'>Quản Lý Đặt Thức Ăn</span>");
@@ -102,34 +113,32 @@ public class SuaHoaDon extends HttpServlet {
             out.println("<tr>");
 
             out.println("<td>" + tenMon + "</td>");
-
-            // FORM UPDATE
             out.println("<form method='post' action='SuaHoaDon'>");
             out.println("<input type='hidden' name='hoaDonId' value='" + hoaDonId + "'>");
             out.println("<input type='hidden' name='chiTietHoaDonId' value='" + ct.getId() + "'>");
             out.println("<input type='hidden' name='monAnId' value='" + ct.getMonAnId() + "'>");
-
             out.println("<td>");
             out.println("<input type='number' name='soLuong' value='" + ct.getSoLuong() + "' min='1' class='form-control'>");
             out.println("</td>");
-
             out.println("<td class='text-primary fw-bold'>" + ct.getDonGiaTaiThoiDiemTaoHoaDon() + "</td>");
-
             out.println("<td>");
             out.println("<button class='btn btn-orange btn-sm'>Cập nhật</button>");
+            out.println("<a href='XoaChiTietHoaDon?chiTietId=" + ct.getId() 
+            + "&hoaDonId=" + hoaDonId + "' "
+            + "onclick=\"return confirm('Bạn có chắc muốn xóa món này?');\" "
+            + "class='btn btn-danger btn-sm'>Xóa</a>");
             out.println("</td>");
-
             out.println("</form>");
 
             out.println("</tr>");
         }
-
         out.println("</tbody></table>");
         out.println("</div></div>");
-
         out.println("</body></html>");
     }
-
+    /**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -155,11 +164,9 @@ public class SuaHoaDon extends HttpServlet {
         		} else {
         		    System.out.println("Cập nhật thành công");
         		}
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         response.sendRedirect("SuaHoaDon?id=" + hoaDonId);
     }
 }

@@ -2,6 +2,11 @@
 <section name="Workbench">
 	<item value="C:\Users\PC-ASUS\OneDrive\Tài liệu\SV CTU\NĂM 4 HK2\HDV\Nhom\mysql-connector-j-9.6.0\mysql-connector-j-9.6.0" key="org.eclipse.jdt.ui.lastextjar"/>
 	<section name="org.eclipse.ltk.ui.refactoring.settings">
+		<item value="false" key="updateQualifiedNames"/>
+		<item value="*" key="patterns"/>
+		<item value="false" key="updateSimilarElements"/>
+		<item value="1" key="updateSimilarElementsMatchStrategy"/>
+		<item value="false" key="updateTextualMatches"/>
 	</section>
 	<section name="SelfEncapsulateFieldWizard">
 		<item value="false" key="GenerateJavadoc"/>

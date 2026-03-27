@@ -1,5 +1,4 @@
 package Client;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
@@ -18,27 +17,30 @@ import javax.ws.rs.core.UriBuilder;
 import org.glassfish.jersey.client.ClientConfig;
 
 import QLDTAN.NguoiDung;
-
+/**
+ * Servlet implementation class DoiMatKhau
+ */
 @WebServlet("/DoiMatKhau")
 public class DoiMatKhau extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
     private static final URI uri =
-            UriBuilder.fromUri("http://localhost:8080/ChungThucService").build();
-
+            UriBuilder.fromUri("http://localhost:8080/NguoiDungService").build();
     Client client = ClientBuilder.newClient(new ClientConfig());
     WebTarget target = client.target(uri);
-
     public DoiMatKhau() {
         super();
+        // TODO Auto-generated constructor stub
     }
-
+    /**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
-
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("user") == null) {
@@ -46,6 +48,12 @@ public class DoiMatKhau extends HttpServlet {
             return;
         }
 
+        String error = null;
+        if (session.getAttribute("error") != null) {
+            error = (String) session.getAttribute("error");
+            session.removeAttribute("error"); 
+        }
+        
         out.println("<!DOCTYPE html>");
         out.println("<html>");
         out.println("<head>");
@@ -69,7 +77,6 @@ public class DoiMatKhau extends HttpServlet {
         out.println("</head>");
         out.println("<body>");
 
-        // Navbar
         out.println("<nav class='navbar navbar-expand-lg navbar-custom mb-4'>");
         out.println("<div class='container'>");
         out.println("<a class='navbar-brand' href='TrangChu'><i class='bi bi-shop'></i> Quản Lý Đặt Thức Ăn</a>");
@@ -81,16 +88,16 @@ public class DoiMatKhau extends HttpServlet {
         out.println("</div>");
         out.println("</nav>");
 
-        // Content
         out.println("<div class='container'>");
         out.println("<div class='row justify-content-center'>");
         out.println("<div class='col-md-8 col-lg-6'>");
         out.println("<div class='card card-custom p-4'>");
 
         out.println("<h3 class='mb-4 text-center page-title'><i class='bi bi-key'></i> Đổi mật khẩu</h3>");
-
+        if (error != null) {
+            out.println("<div class='alert alert-danger text-center'>" + error + "</div>");
+        }
         out.println("<form method='post'>");
-
         out.println("<div class='mb-3'>");
         out.println("<label class='form-label'>Mật khẩu cũ</label>");
         out.println("<input type='password' class='form-control' name='oldpass' required>");
@@ -110,7 +117,6 @@ public class DoiMatKhau extends HttpServlet {
         out.println("<button type='submit' class='btn btn-orange'><i class='bi bi-check-circle'></i> Đổi mật khẩu</button>");
         out.println("<a href='XemThongTin' class='btn btn-secondary'><i class='bi bi-x-circle'></i> Hủy</a>");
         out.println("</div>");
-
         out.println("</form>");
 
         out.println("</div>");
@@ -121,9 +127,10 @@ public class DoiMatKhau extends HttpServlet {
         out.println("</body>");
         out.println("</html>");
     }
-
+    /**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession(false);
 
@@ -133,61 +140,48 @@ public class DoiMatKhau extends HttpServlet {
         }
 
         NguoiDung user = (NguoiDung) session.getAttribute("user");
-
         String matKhauCu = request.getParameter("oldpass");
         String matKhauMoi = request.getParameter("newpass");
         String nhapLai = request.getParameter("renewpass");
 
         if (!matKhauMoi.equals(nhapLai)) {
+        	session.setAttribute("error", "Mật khẩu mới và nhập lại không khớp!");
             response.sendRedirect("DoiMatKhau");
             return;
         }
 
-        String tenDangNhap = user.getTenDangNhap();
-
-        try {
-        	NguoiDung ndCheck = new NguoiDung();
-            ndCheck.setTenDangNhap(user.getTenDangNhap());
-            ndCheck.setMatKhau(matKhauCu);
-            
-            String ketQua = target
-                    .path("rest")
-                    .path("chungthuc")
-                    .path("KiemTraMatKhau")
-                    .request(MediaType.APPLICATION_JSON)
-                    .post(Entity.entity(ndCheck, MediaType.APPLICATION_JSON), String.class);
-
-            boolean hopLe = Boolean.parseBoolean(ketQua);
-            
-            if (!hopLe) {
-                response.sendRedirect("DoiMatKhau");
-                return;
-            }
-            
+        try {        
             NguoiDung ndUpdate = new NguoiDung();
             ndUpdate.setTenDangNhap(user.getTenDangNhap());
-            ndUpdate.setMatKhau(matKhauMoi);
+            ndUpdate.setMatKhau(matKhauCu);
+            ndUpdate.setMatKhauMoi(matKhauMoi); 
             
             Response res = target.path("rest")
-                    .path("chungthuc")
+                    .path("nguoidung")
                     .path("DoiMatKhau")
                     .request(MediaType.APPLICATION_JSON)
                     .put(Entity.entity(ndUpdate, MediaType.APPLICATION_JSON));
 
-            if (res.getStatus() != 200) {
-                response.sendRedirect("DoiMatKhau");
+            int status = res.getStatus();
+
+            if (status == 200) {
+                res.close();
+                session.invalidate();
+                response.sendRedirect("DangNhap");
                 return;
             }
-            
-            res.close();
-
+            else if (status == 401) {   
+                session.setAttribute("error", "Mật khẩu cũ không đúng!");
+            }
+            else {
+                session.setAttribute("error", "Đổi mật khẩu thất bại!");
+            }
+            response.sendRedirect("DoiMatKhau");
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("error", "Đổi mật khẩu thất bại!");
             response.sendRedirect("DoiMatKhau");
             return;
         }
-
-        response.sendRedirect("XemThongTin");
     }
 }

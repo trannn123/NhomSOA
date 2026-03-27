@@ -6,6 +6,7 @@ import java.net.URLDecoder;
 @Path("/nguoidung")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+
 public class NguoiDungWS {
 	INguoiDung service = new NguoiDungImpl();
 	
@@ -36,9 +37,10 @@ public class NguoiDungWS {
 	
 	@GET
 	@Path("/{tenDangNhap}")
-	public Response thongTin(@PathParam("tenDangNhap") String tenDangNhap) {
+	public Response timThongTinTheoTenDangNhap(@PathParam("tenDangNhap") String tenDangNhap) {
 	    NguoiDung nd = service.xemThongTin(tenDangNhap);
 	    if (nd != null) {
+	    	nd.setMatKhau(null);
 	        return Response.ok(nd).build();
 	    } else {
 	        return Response.status(Response.Status.NOT_FOUND)
@@ -52,13 +54,15 @@ public class NguoiDungWS {
 	public Response doiMatKhau(NguoiDung nd) {
 	    boolean kq = service.doiMatKhau(
 	        nd.getTenDangNhap(),
-	        nd.getMatKhau()
+	        nd.getMatKhau(),
+	        nd.getMatKhauMoi()
 	    );
-
 	    if (kq) {
 	        return Response.ok().build();
 	    } else {
-	        return Response.status(Response.Status.BAD_REQUEST).build();
+	        return Response.status(Response.Status.UNAUTHORIZED)
+	        		.entity("Mật khẩu cũ không đúng")
+	        		.build();
 	    }
 	}
 	
@@ -77,14 +81,28 @@ public class NguoiDungWS {
 	
 	@GET
 	@Path("/id/{id}")
-	public Response thongTinTheoId(@PathParam("id") int id) {
+	public Response timThongTinTheoId(@PathParam("id") int id) {
 	    NguoiDung nd = service.timTheoId(id);
 	    if (nd != null) {
+	    	nd.setMatKhau(null);
 	        return Response.ok(nd).build();
 	    }
 	    return Response.status(Response.Status.NOT_FOUND)
 	            .entity("Không tìm thấy người dùng")
 	            .build();
+	}
+	
+	@GET
+	@Path("/auth/{tenDangNhap}")
+	public Response chungThucNguoiDung(@PathParam("tenDangNhap") String tenDangNhap) {
+	    NguoiDung nd = service.xemThongTin(tenDangNhap);
+	    if (nd != null) {
+	        return Response.ok(nd).build();
+	    } else {
+	        return Response.status(Response.Status.NOT_FOUND)
+	                .entity("Không tìm thấy người dùng")
+	                .build();
+	    }
 	}
 }
 

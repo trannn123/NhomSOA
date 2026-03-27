@@ -1,5 +1,4 @@
 package QLDTAN;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -163,23 +162,18 @@ public class MonAnImpl implements IMonAn {
             ps1.setInt(1, number);
             ps1.setInt(2, id);
             ps1.setInt(3, number);
-
             int rows = ps1.executeUpdate();
-
             if (rows > 0) {
                 String sql2 = "UPDATE monan SET trang_thai = 'het' WHERE id = ? AND so_luong = 0";
                 PreparedStatement ps2 = conn.prepareStatement(sql2);
                 ps2.setInt(1, id);
                 ps2.executeUpdate();
             }
-
             conn.close();
             return rows > 0;
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return false;
     }
 

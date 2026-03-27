@@ -1,5 +1,4 @@
 package QLDTAN;
-
 import java.util.Date;
 
 public class NguoiDung {
@@ -7,7 +6,8 @@ public class NguoiDung {
     private int id;
     private String tenDangNhap;
     private String matKhau;
-    private String hoTen;
+    private String matKhauMoi;
+	private String hoTen;
     private String email;
     private String soDienThoai;
     private String diaChi;
@@ -60,4 +60,11 @@ public class NguoiDung {
 
     public Date getNgayTao() { return ngayTao; }
     public void setNgayTao(Date ngayTao) { this.ngayTao = ngayTao; }
+    
+    public String getMatKhauMoi() {
+		return matKhauMoi;
+	}
+	public void setMatKhauMoi(String matKhauMoi) {
+		this.matKhauMoi = matKhauMoi;
+	}
 }

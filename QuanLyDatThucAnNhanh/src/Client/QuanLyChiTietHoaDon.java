@@ -1,10 +1,8 @@
 package Client;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,15 +15,20 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
-
 import org.glassfish.jersey.client.ClientConfig;
 import QLDTAN.MonAn;
 import QLDTAN.NguoiDung;
+import QLDTAN.ChiTietHoaDon;
 
-@WebServlet("/ChiTietHoaDonQuanLy")
-public class ChiTietHoaDonQuanLy extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
+/**
+ * Servlet implementation class QuanLyChiTietHoaDon
+ */
+@WebServlet("/QuanLyChiTietHoaDon")
+public class QuanLyChiTietHoaDon extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
     private static final URI URI_HOADON =
             UriBuilder.fromUri("http://localhost:8080/HoaDonService").build();
     private static final URI URI_MONAN =
@@ -34,30 +37,32 @@ public class ChiTietHoaDonQuanLy extends HttpServlet {
     Client client = ClientBuilder.newClient(config);
     WebTarget target_HoaDon = client.target(URI_HOADON);
     WebTarget target_MonAn = client.target(URI_MONAN);
-
-    public ChiTietHoaDonQuanLy() {
+    public QuanLyChiTietHoaDon() {
         super();
+        // TODO Auto-generated constructor stub
     }
-
+    /**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         NguoiDung nd = (NguoiDung) session.getAttribute("user");
 
-        if (nd == null) {
+        if (nd == null || !"nhanvien".equals(nd.getVaiTro())) {
             response.sendRedirect("DangNhap");
             return;
         }
 
         String idStr = request.getParameter("id");
         if (idStr == null || idStr.trim().isEmpty()) {
-            response.sendRedirect("HoaDonDaDat");
+            response.sendRedirect("QuanLyHoaDon");
             return;
         }
 
         int hoaDonId = Integer.parseInt(idStr);
-        List<QLDTAN.ChiTietHoaDon> dsChiTiet = null;
+        List<ChiTietHoaDon> dsChiTiet = null;
 
         try {
         	dsChiTiet = target_HoaDon
@@ -66,8 +71,7 @@ public class ChiTietHoaDonQuanLy extends HttpServlet {
         	        .path("LayChiTietHoaDon")
         	        .path(String.valueOf(hoaDonId))
         	        .request(MediaType.APPLICATION_JSON)
-        	        .get(new GenericType<List<QLDTAN.ChiTietHoaDon>>() {});
-        	System.out.println("Danh sach chi tiet do dai: " + dsChiTiet.size());
+        	        .get(new GenericType<List<ChiTietHoaDon>>() {});
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,13 +102,12 @@ public class ChiTietHoaDonQuanLy extends HttpServlet {
         out.println("</head>");
         out.println("<body>");
 
-        // Navbar
         out.println("<nav class='navbar bg-white border-bottom mb-4'>");
         out.println("<div class='container'>");
         out.println("<span class='navbar-brand'>Quản Lý Đặt Thức Ăn</span>");
         out.println("<div>");
         out.println("<a href='TrangChu' class='btn btn-outline-danger btn-sm me-2'><i class='bi bi-house'></i> Trang chủ</a>");
-        out.println("<a href='HoaDonDaDat' class='btn btn-outline-primary btn-sm me-2'><i class='bi bi-arrow-left'></i> Quay lại</a>");
+        out.println("<a href='QuanLyHoaDon' class='btn btn-outline-primary btn-sm me-2'><i class='bi bi-arrow-left'></i> Quay lại</a>");
         out.println("<a href='DangXuat' class='btn btn-danger btn-sm'><i class='bi bi-box-arrow-right'></i> Đăng xuất</a>");
         out.println("</div>");
         out.println("</div>");
@@ -131,7 +134,7 @@ public class ChiTietHoaDonQuanLy extends HttpServlet {
 
             double tong = 0;
 
-            for (QLDTAN.ChiTietHoaDon ct : dsChiTiet) {
+            for (ChiTietHoaDon ct : dsChiTiet) {
                 double thanhTien = ct.getSoLuong() * ct.getDonGiaTaiThoiDiemTaoHoaDon();
                 tong += thanhTien;
 
@@ -180,9 +183,12 @@ public class ChiTietHoaDonQuanLy extends HttpServlet {
         out.println("</body>");
         out.println("</html>");
     }
-
+    /**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response);
+    	// TODO Auto-generated method stub
+    	doGet(request, response);
     }
 }

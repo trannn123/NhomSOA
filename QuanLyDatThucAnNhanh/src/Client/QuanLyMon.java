@@ -1,5 +1,4 @@
 package Client;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
@@ -22,27 +21,31 @@ import org.glassfish.jersey.client.ClientConfig;
 
 import QLDTAN.MonAn;
 import QLDTAN.NguoiDung;
-
+/**
+ * Servlet implementation class QuanLyMon
+ */
 @WebServlet("/QuanLyMon")
 public class QuanLyMon extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
     private static final URI uri =
             UriBuilder.fromUri("http://localhost:8080/MonAnService").build();
-
     ClientConfig config = new ClientConfig();
     Client client = ClientBuilder.newClient(config);
     WebTarget target = client.target(uri);
-
     public QuanLyMon() {
         super();
+        // TODO Auto-generated constructor stub
     }
-
+    /**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("user") == null) {
@@ -58,7 +61,6 @@ public class QuanLyMon extends HttpServlet {
         out.println("<meta charset='UTF-8'>");
         out.println("<meta name='viewport' content='width=device-width, initial-scale=1.0'>");
         out.println("<title>Quản lý món ăn</title>");
-
         out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel='stylesheet'>");
         out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css' rel='stylesheet'>");
 
@@ -86,7 +88,6 @@ public class QuanLyMon extends HttpServlet {
         out.println("</head>");
         out.println("<body>");
 
-        // Navbar
         out.println("<nav class='navbar navbar-expand-lg navbar-custom mb-4'>");
         out.println("<div class='container'>");
         out.println("<a class='navbar-brand' href='TrangChu'><i class='bi bi-shop'></i> Quản Lý Đặt Thức Ăn</a>");
@@ -100,7 +101,6 @@ public class QuanLyMon extends HttpServlet {
 
         out.println("<div class='container'>");
         out.println("<div class='card-box'>");
-
         out.println("<div class='d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4'>");
         out.println("<h2 class='page-title mb-0'><i class='bi bi-grid'></i> Quản lý món ăn</h2>");
         out.println("<div>");
@@ -119,7 +119,6 @@ public class QuanLyMon extends HttpServlet {
 
             out.println("<div class='table-responsive'>");
             out.println("<table class='table table-bordered table-hover align-middle'>");
-
             out.println("<thead>");
             out.println("<tr>");
             out.println("<th>Mã</th>");
@@ -133,10 +132,8 @@ public class QuanLyMon extends HttpServlet {
             out.println("</thead>");
 
             out.println("<tbody>");
-
             for (MonAn m : list) {
                 out.println("<tr>");
-
                 out.println("<td class='text-center'>" + m.getId() + "</td>");
                 out.println("<td><strong>" + m.getTenMon() + "</strong></td>");
                 out.println("<td>" + m.getMoTa() + "</td>");
@@ -158,26 +155,24 @@ public class QuanLyMon extends HttpServlet {
                 out.println("<i class='bi bi-trash'></i>");
                 out.println("</a>");
                 out.println("</td>");
-
                 out.println("</tr>");
             }
-
             out.println("</tbody>");
             out.println("</table>");
             out.println("</div>");
-
         } catch (Exception e) {
             out.println("<div class='alert alert-danger'>Không lấy được danh sách món</div>");
         }
-
         out.println("</div>");
         out.println("</div>");
-
         out.println("</body>");
         out.println("</html>");
     }
-
+    /**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+    	// TODO Auto-generated method stub
+    	doGet(request, response);
     }
 }

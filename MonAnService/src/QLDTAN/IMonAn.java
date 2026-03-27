@@ -1,5 +1,4 @@
 package QLDTAN;
-
 import java.util.List;
 
 public interface IMonAn {

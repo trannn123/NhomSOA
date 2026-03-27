@@ -19,7 +19,6 @@
     <fullyQualifiedTypeName name="javax.enterprise.inject.Produces"/>
     <fullyQualifiedTypeName name="javax.ws.rs.Produces"/>
     <fullyQualifiedTypeName name="javax.ws.rs.POST"/>
-    <fullyQualifiedTypeName name="javax.ws.rs.core.Response"/>
     <fullyQualifiedTypeName name="QLDTAN.MonAn"/>
     <fullyQualifiedTypeName name="java.util.ArrayList"/>
     <fullyQualifiedTypeName name="org.glassfish.jersey.client.ClientConfig"/>
@@ -27,16 +26,17 @@
     <fullyQualifiedTypeName name="javax.ws.rs.client.Entity"/>
     <fullyQualifiedTypeName name="QLDTAN.HoaDon"/>
     <fullyQualifiedTypeName name="java.io.PrintWriter"/>
-    <fullyQualifiedTypeName name="javax.ws.rs.core.MediaType"/>
     <fullyQualifiedTypeName name="javax.ws.rs.core.GenericType"/>
     <fullyQualifiedTypeName name="java.util.List"/>
-    <fullyQualifiedTypeName name="javax.ws.rs.client.WebTarget"/>
+    <fullyQualifiedTypeName name="QLDTAN.NguoiDung"/>
+    <fullyQualifiedTypeName name="QLDTAN.Util"/>
     <fullyQualifiedTypeName name="java.net.URI"/>
     <fullyQualifiedTypeName name="javax.ws.rs.core.UriBuilder"/>
     <fullyQualifiedTypeName name="javax.ws.rs.client.Client"/>
     <fullyQualifiedTypeName name="javax.ws.rs.client.ClientBuilder"/>
+    <fullyQualifiedTypeName name="javax.ws.rs.client.WebTarget"/>
+    <fullyQualifiedTypeName name="javax.ws.rs.core.Response"/>
+    <fullyQualifiedTypeName name="javax.ws.rs.core.MediaType"/>
     <fullyQualifiedTypeName name="javax.servlet.http.HttpSession"/>
-    <fullyQualifiedTypeName name="QLDTAN.NguoiDung"/>
     <fullyQualifiedTypeName name="QLDTAN.ChiTietHoaDon"/>
-    <fullyQualifiedTypeName name="QLDTAN.Util"/>
 </qualifiedTypeNameHistroy>

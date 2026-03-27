@@ -27,13 +27,10 @@ public class HoaDonWS {
     @POST
     @Path("/ThemChiTietHoaDon")
     public Response themChiTietHoaDon(ChiTietHoaDon ct) {
-
         boolean kq = service.themChiTietHoaDon(ct);
-
         if (kq) {
             return Response.ok("Thêm chi tiết hóa đơn thành công").build();
         }
-
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity("Thêm chi tiết thất bại")
                 .build();
@@ -42,7 +39,6 @@ public class HoaDonWS {
     @GET
     @Path("/LayDanhSachHoaDon")
     public Response layDanhSachHoaDon() {
-System.out.println("Lay danh sach hoa don");
         List<HoaDon> ds = service.layDanhSachHoaDon();
 
         return ds != null
@@ -53,7 +49,6 @@ System.out.println("Lay danh sach hoa don");
     @GET
     @Path("/LayChiTietHoaDon/{id}")
     public Response layChiTietHoaDon(@PathParam("id") int id) {
-
         List<ChiTietHoaDon> ds = service.layChiTietHoaDon(id);
 
         return ds != null
@@ -64,7 +59,6 @@ System.out.println("Lay danh sach hoa don");
     @GET
     @Path("/LayHoaDonTheoNguoiDung/{nguoiDungId}")
     public Response layHoaDonTheoNguoiDung(@PathParam("nguoiDungId") int nguoiDungId) {
-
         List<HoaDon> ds = service.layHoaDonTheoNguoiDung(nguoiDungId);
 
         return ds != null
@@ -82,7 +76,6 @@ System.out.println("Lay danh sach hoa don");
             @QueryParam("chiTietHoaDonId") int idChiTietHoaDon,
             @QueryParam("monAnId") int monAnId,
             @QueryParam("soLuong") int soLuong) {
-
         boolean result = service.capNhatSoLuongMonAnTrongChiTietHoaDon(idChiTietHoaDon, monAnId, soLuong);
 
         if (result) {
@@ -101,7 +94,6 @@ System.out.println("Lay danh sach hoa don");
     public Response capNhatTrangThaiHoaDon(
             @QueryParam("hoaDonId") int hoaDonId,
             @QueryParam("trangThai") String trangThai) {
-
         boolean result = service.capNhatTrangThaiHoaDon(hoaDonId, trangThai);
 
         if (result) {
@@ -111,5 +103,51 @@ System.out.println("Lay danh sach hoa don");
                     .entity("Cập nhật trạng thái thất bại")
                     .build();
         }
+    }
+    
+    @DELETE
+    @Path("/XoaHoaDon/{id}")
+    public Response xoaHoaDon(@PathParam("id") int hoaDonId) {
+        boolean result = service.xoaHoaDon(hoaDonId);
+        if (result) {
+            return Response.ok("Đã xóa hóa đơn #" + hoaDonId).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                           .entity("Hóa đơn không tồn tại").build();
+        }
+    }
+
+    @DELETE
+    @Path("/XoaChiTietHoaDon/{chiTietId}")
+    public Response xoaChiTietHoaDon(@PathParam("chiTietId") int chiTietId) {
+        boolean result = service.xoaChiTietHoaDon(chiTietId);
+        if (result) {
+            return Response.ok("Đã xóa chi tiết hóa đơn #" + chiTietId).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                           .entity("Chi tiết hóa đơn không tồn tại").build();
+        }
+    }
+    
+    @GET
+    @Path("/TongTienHoaDon/{id}")
+    public Response tinhTongTienHoaDon(
+            @PathParam("id") int id) {
+        double tong =
+                service.tinhTongTienHoaDon(id);
+        return Response
+                .ok(String.valueOf(tong))
+                .build();
+    }
+    
+    @GET
+    @Path("/TongSoLuongHoaDon/{id}")
+    public Response tinhTongSoLuongHoaDon(
+            @PathParam("id") int id) {
+        int tong =
+                service.tinhTongSoLuongHoaDon(id);
+        return Response
+                .ok(String.valueOf(tong))
+                .build();
     }
 }

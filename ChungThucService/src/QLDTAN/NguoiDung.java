@@ -1,5 +1,4 @@
 package QLDTAN;
-
 import java.util.Date;
 
 public class NguoiDung {

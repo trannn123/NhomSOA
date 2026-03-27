@@ -1,5 +1,4 @@
 package Client;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
@@ -23,28 +22,33 @@ import org.glassfish.jersey.client.ClientConfig;
 import QLDTAN.HoaDon;
 import QLDTAN.NguoiDung;
 import QLDTAN.Util;
-
+/**
+ * Servlet implementation class HoaDonDaDat
+ */
 @WebServlet("/HoaDonDaDat")
 public class HoaDonDaDat extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
     private static final URI uri =
             UriBuilder.fromUri("http://localhost:8080/HoaDonService").build();
-
     ClientConfig config = new ClientConfig();
     Client client = ClientBuilder.newClient(config);
     WebTarget target = client.target(uri);
-
     public HoaDonDaDat() {
         super();
+        // TODO Auto-generated constructor stub
     }
-
+    /**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
-
+        PrintWriter out = response.getWriter();
+        
         HttpSession session = request.getSession();
         NguoiDung nd = (NguoiDung) session.getAttribute("user");
 
@@ -66,9 +70,7 @@ public class HoaDonDaDat extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        PrintWriter out = response.getWriter();
-
+        
         out.println("<!DOCTYPE html>");
         out.println("<html>");
         out.println("<head>");
@@ -89,21 +91,16 @@ public class HoaDonDaDat extends HttpServlet {
         out.println("</head>");
         out.println("<body>");
 
-        // Navbar đồng bộ màu đỏ, bo góc giống các trang khác
         out.println("<nav class='navbar bg-white border-bottom shadow-sm mb-4'>");
         out.println("<div class='container'>");
-
         out.println("<span class='navbar-brand fw-bold text-danger'>Quản Lý Đặt Thức Ăn</span>");
-
         out.println("<div class='d-flex align-items-center'>");
         out.println("<a href='TrangChu' class='btn btn-outline-danger btn-sm me-2'><i class='bi bi-house'></i> Trang chủ</a>");
         out.println("<a href='DanhSachMonAn' class='btn btn-outline-danger btn-sm me-2'><i class='bi bi-list'></i> Món ăn</a>");
         out.println("<a href='XemGioHang' class='btn btn-outline-danger btn-sm me-2'><i class='bi bi-cart'></i> Giỏ hàng</a>");
-        
         out.println("<span class='me-3 text-danger'>Xin chào <b>" + nd.getHoTen() + "</b></span>");
         out.println("<a href='DangXuat' class='btn btn-danger btn-sm'><i class='bi bi-box-arrow-right'></i> Đăng xuất</a>");
         out.println("</div>");
-
         out.println("</div>");
         out.println("</nav>");
 
@@ -127,14 +124,45 @@ public class HoaDonDaDat extends HttpServlet {
             out.println("</tr>");
             out.println("</thead>");
             out.println("<tbody>");
-            System.out.println("Hoa don do dai" +  dsHoaDon.size());
 
+            
+            
             for (HoaDon hd : dsHoaDon) {
+            	int tongSoLuong = 0;
+                double tongTien = 0;
+
+                try {
+
+                    String slStr =
+                            target.path("rest")
+                                    .path("hoadon")
+                                    .path("TongSoLuongHoaDon")
+                                    .path(String.valueOf(hd.getId()))
+                                    .request()
+                                    .get(String.class);
+
+                    tongSoLuong = Integer.parseInt(slStr);
+
+                    String tienStr =
+                            target.path("rest")
+                                    .path("hoadon")
+                                    .path("TongTienHoaDon")
+                                    .path(String.valueOf(hd.getId()))
+                                    .request()
+                                    .get(String.class);
+
+                    tongTien = Double.parseDouble(tienStr);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                
                 out.println("<tr>");
                 out.println("<td><b>#" + hd.getId() + "</b></td>");
                 out.println("<td>" + hd.getNgayDat() + "</td>");
-                out.println("<td>" + Util.getTongSoLuongCuaHoaDon(hd) + "</td>");
-                out.println("<td class='text-danger fw-bold'>" + Util.getTongTienCuaHoaDon(hd) + "</td>");
+                out.println("<td>" + tongSoLuong + "</td>");
+                out.println("<td class='text-danger fw-bold'>" 
+                        + tongTien + "</td>");
 
                 String trangThai = hd.getTrangThai();
                 String trangThaiHienThi = trangThai;
@@ -150,7 +178,6 @@ public class HoaDonDaDat extends HttpServlet {
                     mau = "bg-danger";
                     trangThaiHienThi = "Hủy";
                 }
-
                 out.println("<td><span class='badge " + mau + " badge-trangthai'>" + trangThaiHienThi + "</span></td>");
                 out.println("<td>");
                 out.println("<a href='ChiTietHoaDon?id=" + hd.getId() + "' class='btn btn-sm btn-primary'>");
@@ -159,25 +186,25 @@ public class HoaDonDaDat extends HttpServlet {
                 out.println("</td>");
                 out.println("</tr>");
             }
-
             out.println("</tbody>");
             out.println("</table>");
             out.println("</div>");
         }
-
         out.println("<div class='text-center mt-3'>");
         out.println("<a href='DanhSachMonAn' class='btn btn-danger'>Tiếp tục đặt món</a>");
         out.println("</div>");
-
         out.println("</div>");
         out.println("</div>");
 
         out.println("</body>");
         out.println("</html>");
     }
-
+    /**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response);
+    	// TODO Auto-generated method stub
+    	doGet(request, response);
     }
 }

@@ -1,5 +1,4 @@
 package Client;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
@@ -21,28 +20,31 @@ import javax.ws.rs.core.UriBuilder;
 import org.glassfish.jersey.client.ClientConfig;
 
 import QLDTAN.NguoiDung;
-
+/**
+ * Servlet implementation class CapNhatThongTin
+ */
 @WebServlet("/CapNhatThongTin")
 public class CapNhatThongTin extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
     private static final URI uri =
             UriBuilder.fromUri("http://localhost:8080/NguoiDungService").build();
-
     Client client = ClientBuilder.newClient(new ClientConfig());
     WebTarget target = client.target(uri);
-
     public CapNhatThongTin() {
         super();
+        // TODO Auto-generated constructor stub
     }
-
+    /**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
-
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("user") == null) {
@@ -50,7 +52,13 @@ public class CapNhatThongTin extends HttpServlet {
             return;
         }
 
-        NguoiDung user = (NguoiDung) session.getAttribute("user");
+        NguoiDung userSession = (NguoiDung) session.getAttribute("user");
+        NguoiDung user = target.path("rest")
+                .path("nguoidung")
+                .path("id")
+                .path(String.valueOf(userSession.getId()))
+                .request(MediaType.APPLICATION_JSON)
+                .get(NguoiDung.class);
 
         String hoTen = user.getHoTen() != null ? user.getHoTen() : "";
         String email = user.getEmail() != null ? user.getEmail() : "";
@@ -93,7 +101,7 @@ public class CapNhatThongTin extends HttpServlet {
         out.println(".btn-cancel{background:#6c757d;border:none;color:#fff;}");
         out.println(".btn-cancel:hover{background:#5c636a;color:#fff;}");
         out.println("</style>");
-
+        
         out.println("</head>");
         out.println("<body>");
 
@@ -110,12 +118,10 @@ public class CapNhatThongTin extends HttpServlet {
 
         out.println("<div class='container page-wrap'>");
         out.println("<div class='form-card'>");
-
         out.println("<div class='card-header-custom'>");
         out.println("<h3><i class='bi bi-person-lines-fill me-2'></i>Cập nhật thông tin cá nhân</h3>");
         out.println("<p>Chỉnh sửa thông tin tài khoản của bạn bên dưới</p>");
         out.println("</div>");
-
         out.println("<div class='card-body-custom'>");
         out.println("<form method='post'>");
 
@@ -153,20 +159,19 @@ public class CapNhatThongTin extends HttpServlet {
         out.println("</body>");
         out.println("</html>");
     }
-
+    /**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession(false);
-
         if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect("DangNhap");
             return;
         }
 
         NguoiDung user = (NguoiDung) session.getAttribute("user");
-
         String hoTen = request.getParameter("hoten");
         String email = request.getParameter("email");
         String sdt = request.getParameter("sdt");
@@ -192,15 +197,20 @@ public class CapNhatThongTin extends HttpServlet {
                 return;
             }
             res.close();
-            session.setAttribute("user", ndUpdate);
-
+            NguoiDung userMoi = target.path("rest")
+                    .path("nguoidung")
+                    .path("id")
+                    .path(String.valueOf(user.getId()))
+                    .request(MediaType.APPLICATION_JSON)
+                    .get(NguoiDung.class);
+            
+            session.setAttribute("user",userMoi);
         } catch (Exception e) {
         	e.printStackTrace();
             session.setAttribute("error", "Lỗi hệ thống!");
             response.sendRedirect("CapNhatThongTin");
             return;
         }
-
         response.sendRedirect("XemThongTin");
     }
 }

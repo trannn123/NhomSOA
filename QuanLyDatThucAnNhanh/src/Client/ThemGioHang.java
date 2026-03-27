@@ -1,5 +1,4 @@
 package Client;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -20,28 +19,29 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.client.ClientConfig;
 
-import QLDTAN.GioHang;
+import QLDTAN.ItemGioHang;
 import QLDTAN.MonAn;
-
+/**
+ * Servlet implementation class ThemGioHang
+ */
 @WebServlet("/ThemGioHang")
 public class ThemGioHang extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
     private static final URI uri =
             UriBuilder.fromUri("http://localhost:8080/MonAnService").build();
-
     ClientConfig config = new ClientConfig();
     Client client = ClientBuilder.newClient(config);
     WebTarget target = client.target(uri);
-
     public ThemGioHang() {
         super();
+        // TODO Auto-generated constructor stub
     }
-
     @SuppressWarnings("unchecked")
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         String idStr = request.getParameter("id");
         String from = request.getParameter("from");
 
@@ -84,7 +84,7 @@ public class ThemGioHang extends HttpServlet {
         }
 
         HttpSession session = request.getSession();
-        List<GioHang> cart = (List<GioHang>) session.getAttribute("cart");
+        List<ItemGioHang> cart = (List<ItemGioHang>) session.getAttribute("cart");
 
         if (cart == null) {
             cart = new ArrayList<>();
@@ -92,16 +92,15 @@ public class ThemGioHang extends HttpServlet {
 
         boolean tonTai = false;
 
-        for (GioHang g : cart) {
+        for (ItemGioHang g : cart) {
             if (g.getMon() != null && g.getMon().getId() == id) {
                 g.setSoLuong(g.getSoLuong() + 1);
                 tonTai = true;
                 break;
             }
         }
-
         if (!tonTai) {
-            GioHang gh = new GioHang(mon, 1);
+            ItemGioHang gh = new ItemGioHang(mon, 1);
             cart.add(gh);
         }
 
@@ -113,9 +112,12 @@ public class ThemGioHang extends HttpServlet {
             response.sendRedirect("DanhSachMonAn");
         }
     }
-
+    /**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response);
+    	// TODO Auto-generated method stub
+    	doGet(request, response);
     }
 }

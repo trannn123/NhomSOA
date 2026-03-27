@@ -1,5 +1,4 @@
 package QLDTAN;
-
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,6 +26,7 @@ public class ChungThucImpl implements IChungThuc{
 	        NguoiDung nd = target
 	        		.path("rest")
 	        		.path("nguoidung")
+	        		.path("auth")
 	        		.path(tenDangNhap)
 	        		.request(MediaType.APPLICATION_JSON)
 	        		.get(NguoiDung.class);
@@ -37,6 +37,7 @@ public class ChungThucImpl implements IChungThuc{
 	        		NguoiDung kq = new NguoiDung();
 	                kq.setId(nd.getId());
 	                kq.setTenDangNhap(nd.getTenDangNhap());
+	                kq.setHoTen(nd.getHoTen());
 	                kq.setVaiTro(nd.getVaiTro());
 	                kq.setTrangThai(nd.getTrangThai());
 	                return kq;
@@ -46,31 +47,5 @@ public class ChungThucImpl implements IChungThuc{
 	        e.printStackTrace();
 	    }
 	    return null;
-	}
-	
-	@Override
-	public boolean kiemTraMatKhau(String tenDangNhap, String matKhau) {
-		NguoiDung nd = dangNhap(tenDangNhap, matKhau);
-	    return nd != null;
-	}
-	
-	@Override
-	public boolean doiMatKhau(String tenDangNhap, String matKhauMoi) {
-	    try {
-	    	NguoiDung nd = new NguoiDung();
-	    	nd.setTenDangNhap(tenDangNhap);
-	    	nd.setMatKhau(matKhauMoi);
-	    	Response res = target
-	        		.path("rest")
-	        		.path("nguoidung")
-	        		.path("DoiMatKhau")
-	        		.request(MediaType.APPLICATION_JSON)
-	        		.put(Entity.entity(nd, MediaType.APPLICATION_JSON));
-	    	return res.getStatus() == 200;
-	    	
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	    return false;
 	}
 }

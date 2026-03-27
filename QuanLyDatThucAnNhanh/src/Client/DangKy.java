@@ -1,5 +1,4 @@
 package Client;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
@@ -23,36 +22,38 @@ import javax.ws.rs.core.UriBuilder;
 import org.glassfish.jersey.client.ClientConfig;
 
 import QLDTAN.NguoiDung;
-
+/**
+ * Servlet implementation class DangKy
+ */
 @WebServlet("/DangKy")
 public class DangKy extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-
-    // Địa chỉ WebService
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
     private static final URI uri =
             UriBuilder.fromUri("http://localhost:8080/NguoiDungService").build();
-
     ClientConfig config = new ClientConfig();
     Client client = ClientBuilder.newClient(config);
     WebTarget target = client.target(uri);
-
     public DangKy() {
         super();
+        // TODO Auto-generated constructor stub
     }
-
+    /**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         request.setCharacterEncoding("UTF-8");
+        
         out.println("<!DOCTYPE html>");
         out.println("<html>");
         out.println("<head>");
-
         out.println("<meta charset='UTF-8'>");
         out.println("<title>Đăng ký tài khoản</title>");
-
         out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel='stylesheet'>");
 
         out.println("<style>");
@@ -67,50 +68,43 @@ public class DangKy extends HttpServlet {
         out.println("<body>");
 
         out.println("<div class='card register-card p-4'>");
-
         out.println("<h3 class='title'>Đăng ký tài khoản</h3>");
-
         out.println("<form method='post'>");
+  
+	    out.println("<div class='mb-3'>");
+	    out.println("<input class='form-control' name='tenDangNhap' placeholder='Tên đăng nhập' "
+	             + "required minlength='4' maxlength='20' pattern='[a-zA-Z0-9]+' "
+	             + "title='Tên đăng nhập 4-20 ký tự, chỉ gồm chữ và số'>");
+	    out.println("</div>");
 
-     // Tên đăng nhập
-     out.println("<div class='mb-3'>");
-     out.println("<input class='form-control' name='tenDangNhap' placeholder='Tên đăng nhập' "
-             + "required minlength='4' maxlength='20' pattern='[a-zA-Z0-9]+' "
-             + "title='Tên đăng nhập 4-20 ký tự, chỉ gồm chữ và số'>");
-     out.println("</div>");
+    
+	    out.println("<div class='mb-3'>");
+	    out.println("<input type='password' class='form-control' name='matKhau' placeholder='Mật khẩu' "
+	             + "required minlength='6' title='Mật khẩu tối thiểu 6 ký tự'>");
+	    out.println("</div>");
 
-     // Mật khẩu
-     out.println("<div class='mb-3'>");
-     out.println("<input type='password' class='form-control' name='matKhau' placeholder='Mật khẩu' "
-             + "required minlength='6' title='Mật khẩu tối thiểu 6 ký tự'>");
-     out.println("</div>");
-
-     // Họ tên
-     out.println("<div class='mb-3'>");
-     out.println("<input class='form-control' name='hoTen' placeholder='Họ tên' "
+	    out.println("<div class='mb-3'>");
+	    out.println("<input class='form-control' name='hoTen' placeholder='Họ tên' "
              + "required pattern='[A-Za-zÀ-ỹ ]+' "
              + "title='Họ tên chỉ được chứa chữ'>");
-     out.println("</div>");
+	    out.println("</div>");
 
-     // Email
-     out.println("<div class='mb-3'>");
-     out.println("<input type='email' class='form-control' name='email' placeholder='Email' required>");
-     out.println("</div>");
+	    out.println("<div class='mb-3'>");
+	    out.println("<input type='email' class='form-control' name='email' placeholder='Email' required>");
+	    out.println("</div>");
 
-     // Số điện thoại
-     out.println("<div class='mb-3'>");
-     out.println("<input class='form-control' name='soDienThoai' placeholder='Số điện thoại' "
-             + "required pattern='[0-9]{10}' title='Số điện thoại phải có 10 số'>");
-     out.println("</div>");
+	    out.println("<div class='mb-3'>");
+	    out.println("<input class='form-control' name='soDienThoai' placeholder='Số điện thoại' "
+	             + "required pattern='[0-9]{10}' title='Số điện thoại phải có 10 số'>");
+	    out.println("</div>");
 
-     // Địa chỉ
-     out.println("<div class='mb-3'>");
-     out.println("<textarea class='form-control' name='diaChi' placeholder='Địa chỉ' "
-             + "required minlength='5'></textarea>");
-     out.println("</div>");
+	    out.println("<div class='mb-3'>");
+	    out.println("<textarea class='form-control' name='diaChi' placeholder='Địa chỉ' "
+	             + "required minlength='5'></textarea>");
+	    out.println("</div>");
 
-     out.println("<button class='btn btn-main w-100'>Đăng ký</button>");
-     out.println("</form>");
+	    out.println("<button class='btn btn-main w-100'>Đăng ký</button>");
+	    out.println("</form>");
 
         out.println("<div class='text-center mt-3'>");
         out.println("Đã có tài khoản? <a href='DangNhap'>Đăng nhập</a>");
@@ -120,10 +114,11 @@ public class DangKy extends HttpServlet {
         out.println("</body>");
         out.println("</html>");
     }
-
+    /**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	request.setCharacterEncoding("UTF-8");
-        // Lấy dữ liệu từ form
         String tenDangNhap = request.getParameter("tenDangNhap");
         String matKhau = request.getParameter("matKhau");
         String hoTen = request.getParameter("hoTen");
@@ -132,29 +127,25 @@ public class DangKy extends HttpServlet {
         String diaChi = request.getParameter("diaChi");
 
     	NguoiDung nd = new NguoiDung();
-
     	nd.setTenDangNhap(tenDangNhap);
     	nd.setMatKhau(matKhau);
     	nd.setHoTen(hoTen);
     	nd.setEmail(email);
     	nd.setSoDienThoai(soDienThoai);
     	nd.setDiaChi(diaChi);
+    	
         Response ketQua = target
                 .path("rest")
                 .path("nguoidung")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(nd, MediaType.APPLICATION_JSON));
+        
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
-        // Kiểm tra kết quả
         if (ketQua.getStatus() == 200) {
-
-            // Đăng ký thành công -> chuyển sang đăng nhập
             response.sendRedirect("DangNhap");
-
         } else {
-
             out.println("<html><body>");
             out.println("<h3 style='color:red'>Đăng ký thất bại</h3>");
             out.println("<a href='DangKy'>Quay lại</a>");

@@ -1,5 +1,4 @@
 package Client;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
@@ -21,11 +20,15 @@ import javax.ws.rs.core.UriBuilder;
 import org.glassfish.jersey.client.ClientConfig;
 import QLDTAN.MonAn;
 import QLDTAN.NguoiDung;
-
+/**
+ * Servlet implementation class ChiTietHoaDon
+ */
 @WebServlet("/ChiTietHoaDon")
 public class ChiTietHoaDon extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
     private static final URI URI_HOADON =
             UriBuilder.fromUri("http://localhost:8080/HoaDonService").build();
     private static final URI URI_MONAN =
@@ -34,14 +37,15 @@ public class ChiTietHoaDon extends HttpServlet {
     Client client = ClientBuilder.newClient(config);
     WebTarget target_HoaDon = client.target(URI_HOADON);
     WebTarget target_MonAn = client.target(URI_MONAN);
-
     public ChiTietHoaDon() {
         super();
+        // TODO Auto-generated constructor stub
     }
-
+    /**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         HttpSession session = request.getSession();
         NguoiDung nd = (NguoiDung) session.getAttribute("user");
 
@@ -67,12 +71,9 @@ public class ChiTietHoaDon extends HttpServlet {
         	        .path(String.valueOf(hoaDonId))
         	        .request(MediaType.APPLICATION_JSON)
         	        .get(new GenericType<List<QLDTAN.ChiTietHoaDon>>() {});
-        	System.out.println("Danh sach chi tiet do dai: " + dsChiTiet.size());
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
@@ -98,7 +99,6 @@ public class ChiTietHoaDon extends HttpServlet {
         out.println("</head>");
         out.println("<body>");
 
-        // Navbar
         out.println("<nav class='navbar bg-white border-bottom mb-4'>");
         out.println("<div class='container'>");
         out.println("<span class='navbar-brand'>Quản Lý Đặt Thức Ăn</span>");
@@ -134,9 +134,7 @@ public class ChiTietHoaDon extends HttpServlet {
             for (QLDTAN.ChiTietHoaDon ct : dsChiTiet) {
                 double thanhTien = ct.getSoLuong() * ct.getDonGiaTaiThoiDiemTaoHoaDon();
                 tong += thanhTien;
-
                 String tenMon = "Không xác định";
-
                 try {
                     MonAn mon = target_MonAn.path("rest")
                     	      .path("monan")
@@ -144,14 +142,12 @@ public class ChiTietHoaDon extends HttpServlet {
                     	      .path(String.valueOf(ct.getMonAnId()))
                     	      .request(MediaType.APPLICATION_JSON)
                     	      .get(MonAn.class);
-
                     if (mon != null) {
                         tenMon = mon.getTenMon();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
                 out.println("<tr>");
                 out.println("<td>" + tenMon + "</td>");
                 out.println("<td>" + ct.getSoLuong() + "</td>");
@@ -159,7 +155,6 @@ public class ChiTietHoaDon extends HttpServlet {
                 out.println("<td class='text-danger fw-bold'>" + thanhTien + "</td>");
                 out.println("</tr>");
             }
-
             out.println("<tr>");
             out.println("<td colspan='3' class='text-end fw-bold'>Tổng cộng</td>");
             out.println("<td class='text-danger fw-bold'>" + tong + "</td>");
@@ -169,7 +164,6 @@ public class ChiTietHoaDon extends HttpServlet {
             out.println("</table>");
             out.println("</div>");
         }
-
         out.println("<div class='text-center mt-3'>");
         out.println("<a href='HoaDonDaDat' class='btn btn-orange'><i class='bi bi-arrow-left'></i> Quay lại danh sách hóa đơn</a>");
         out.println("</div>");
@@ -180,9 +174,12 @@ public class ChiTietHoaDon extends HttpServlet {
         out.println("</body>");
         out.println("</html>");
     }
-
+    /**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response);
+    	// TODO Auto-generated method stub
+    	doGet(request, response);
     }
 }
